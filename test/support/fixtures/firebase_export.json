@@ -1,0 +1,40 @@
+{
+  "aires": {
+    "node-1031945363": {"lat": 50.638265, "lon": 3.0809135, "name": "Square du Manège"},
+    "node-1002710280": {"lat": 42.6853733, "lon": 2.9273242, "name": "Barres fixes"}
+  },
+  "aires_enrichies": {
+    "node-1031945363": {"lat": 50.638265, "lon": 3.0809135, "name": "Square du Manège", "uid_comments": {"uid-a": true}},
+    "way-26541913": {"lat": 48.8401, "lon": 2.3567, "name": ""},
+    "aire-1515776975678": {"lat": 48.838692768526776, "lon": 2.353633046150208},
+    "aire-broken": {"name": "sans coordonnées"}
+  },
+  "nouvelle_aire": {
+    "aire-1515776975678": {"lat": 48.838692768526776, "lon": 2.353633046150208, "timestamp": 1515776975678, "uid": "uid-a", "validated": true}
+  },
+  "aires_infos": {
+    "aire-1515776975678": {
+      "-L3SLTUT-qfC0odyD96H": {"equipements": ["escalade", "pont de singe", "trampoline"], "gratuit": true, "ouvertNuit": true, "prive": false, "timestamp": 1515949948945, "uid": "uid-a", "validated": true}
+    },
+    "node-unknown": {
+      "-Lxxxxx": {"equipements": ["toboggan"], "gratuit": true}
+    }
+  },
+  "comments": {
+    "aire-1515776975678": {
+      "uid-a": {"comment": "Très joli petit square au calme ! ", "displayName": "", "ratingEquipment": 3.5, "ratingSurroundings": 4, "timestamp": 1522835999647},
+      "uid-b": {"comment": "", "displayName": "Francis", "ratingEquipment": 5, "ratingSurroundings": 5, "timestamp": 1522835999000}
+    }
+  },
+  "images": {
+    "node-1031945363": {
+      "1600000000000": {"path": "https://storage.googleapis.com/b/photos/node-1031945363/node-1031945363_uid-a_1600000000000", "thumbnail": "https://storage.googleapis.com/b/photos/node-1031945363/thumb_node-1031945363_uid-a_1600000000000", "uid": "uid-a", "verified": false}
+    }
+  },
+  "aires_suppression": {
+    "way-26541913": {"raison": "L'aire a été démontée", "timestamp": 1600000000000, "uid": "uid-b"}
+  },
+  "geofire": {
+    "node-1031945363": {"g": "u140", "l": [50.638265, 3.0809135]}
+  }
+}

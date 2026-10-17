@@ -50,3 +50,9 @@ jobs:
       - run: mix compile --warnings-as-errors
       - run: mix format --check-formatted
       - run: mix test
+
+      - name: Import the public 2022 Firebase export
+        run: |
+          mkdir -p tmp
+          curl -sSfL -o tmp/base_repartage_2022_08_22.json https://raw.githubusercontent.com/fchabouis/parc-epique/master/base_repartage_2022_08_22.json
+          mix test --only legacy_export
