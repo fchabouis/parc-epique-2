@@ -84,6 +84,10 @@ defmodule ParcEpique.Legacy.PhotoImportTest do
 
     assert PhotoImport.file_name("#{@bucket}/photos%2Fnode-1%2Fthumb_node-1_uid_2") ==
              "thumb_node-1_uid_2"
+
+    assert PhotoImport.file_name(
+             "#{@bucket}/photos%2Fnode-1%2Fnode-1_uid_2?GoogleAccessId=x&Expires=1&Signature=a%2Fb"
+           ) == "node-1_uid_2"
   end
 
   defp insert_photo(playground, name, opts) do
