@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n>1);\n"
+
+msgid "Playgrounds across France, rated and photographed by their visitors."
+msgstr "Les aires de jeux de France, notées et photographiées par leurs visiteurs."
+
+msgid "close"
+msgstr "fermer"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "We can't find the internet"
+msgstr "Impossible de joindre le serveur"
+
+msgid "Attempting to reconnect"
+msgstr "Tentative de reconnexion"
+
+msgid "Something went wrong!"
+msgstr "Une erreur s'est produite !"
