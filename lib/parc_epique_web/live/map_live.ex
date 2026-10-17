@@ -12,14 +12,22 @@ defmodule ParcEpiqueWeb.MapLive do
   use ParcEpiqueWeb, :live_view
 
   alias ParcEpique.{Accounts, Playgrounds}
-  alias ParcEpique.Playgrounds.Review
+  alias ParcEpique.Playgrounds.{Detail, Review}
   alias ParcEpiqueWeb.PlaygroundComponents
 
   @limit 3000
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, truncated: false, photo: nil, review_form: nil, register_prompt: false)}
+    {:ok,
+     assign(socket,
+       truncated: false,
+       photo: nil,
+       review_form: nil,
+       register_prompt: false,
+       detail_form: nil,
+       confirm_report: false
+     )}
   end
 
   @impl true
@@ -34,6 +42,8 @@ defmodule ParcEpiqueWeb.MapLive do
        photo: nil,
        review_form: nil,
        register_prompt: false,
+       detail_form: nil,
+       confirm_report: false,
        page_title: PlaygroundComponents.playground_name(playground)
      )
      |> push_event("focus", %{
@@ -88,6 +98,8 @@ defmodule ParcEpiqueWeb.MapLive do
             close={~p"/#{@locale}"}
             review_form={@review_form}
             register_prompt={@register_prompt}
+            detail_form={@detail_form}
+            confirm_report={@confirm_report}
           />
         </aside>
       </div>
@@ -155,6 +167,60 @@ defmodule ParcEpiqueWeb.MapLive do
 
     form = review |> Kernel.||(%Review{}) |> Playgrounds.change_review() |> to_form()
     {:noreply, assign(socket, review_form: form, register_prompt: false)}
+  end
+
+  def handle_event("new_detail", _params, socket) do
+    form = %Detail{} |> Playgrounds.change_detail() |> to_form()
+    {:noreply, assign(socket, detail_form: form, register_prompt: false)}
+  end
+
+  def handle_event("cancel_detail", _params, socket) do
+    {:noreply, assign(socket, detail_form: nil)}
+  end
+
+  def handle_event("validate_detail", params, socket) do
+    changeset =
+      %Detail{}
+      |> Playgrounds.change_detail(Map.get(params, "detail", %{}))
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, detail_form: to_form(changeset))}
+  end
+
+  def handle_event("save_detail", params, %{assigns: %{playground: %{} = p}} = socket) do
+    {user, guest?} = contributor!(socket)
+
+    case Playgrounds.propose_details(p, user, Map.get(params, "detail", %{})) do
+      {:ok, _detail} ->
+        {:noreply,
+         socket
+         |> assign(detail_form: nil, register_prompt: guest?)
+         |> put_flash(
+           :info,
+           gettext("Thank you! Your suggestion will be shown once it has been checked.")
+         )}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, detail_form: to_form(changeset))}
+    end
+  end
+
+  def handle_event("confirm_report", _params, socket) do
+    {:noreply, assign(socket, confirm_report: true)}
+  end
+
+  def handle_event("cancel_report", _params, socket) do
+    {:noreply, assign(socket, confirm_report: false)}
+  end
+
+  def handle_event("report_removal", _params, %{assigns: %{playground: %{} = p}} = socket) do
+    {user, guest?} = contributor!(socket)
+    {:ok, _report} = Playgrounds.report_removal(p, user)
+
+    {:noreply,
+     socket
+     |> assign(confirm_report: false, register_prompt: guest?)
+     |> put_flash(:info, gettext("Thank you, your report will be checked."))}
   end
 
   def handle_event("cancel_review", _params, socket) do

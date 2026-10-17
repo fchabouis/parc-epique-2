@@ -429,3 +429,33 @@ msgstr "L'aire de jeux a été ajoutée, merci !"
 
 msgid "The playground could not be added."
 msgstr "L'aire de jeux n'a pas pu être ajoutée."
+
+msgid "Price"
+msgstr "Tarif"
+
+msgid "At night"
+msgstr "La nuit"
+
+msgid "Access"
+msgstr "Accès"
+
+msgid "I don't know"
+msgstr "Je ne sais pas"
+
+msgid "Sending..."
+msgstr "Envoi…"
+
+msgid "Send"
+msgstr "Envoyer"
+
+msgid "Thank you! Your suggestion will be shown once it has been checked."
+msgstr "Merci ! Votre suggestion sera affichée une fois vérifiée."
+
+msgid "Are you sure this playground no longer exists?"
+msgstr "Cette aire de jeux n'existe vraiment plus ?"
+
+msgid "Yes, it no longer exists"
+msgstr "Oui, elle n'existe plus"
+
+msgid "Thank you, your report will be checked."
+msgstr "Merci, votre signalement sera vérifié."
