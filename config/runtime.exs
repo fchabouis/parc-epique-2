@@ -70,6 +70,9 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
+  config :parc_epique, ParcEpique.Storage,
+    root: System.get_env("UPLOADS_DIR") || "/var/lib/parc_epique/uploads"
+
   host = System.get_env("PHX_HOST") || "example.com"
 
   config :parc_epique, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")

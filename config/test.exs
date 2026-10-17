@@ -20,6 +20,9 @@ config :parc_epique, ParcEpiqueWeb.Endpoint,
   secret_key_base: "MpMACr0FCzOtXbJw7aUQG9Cl2eCOuC/eGlV+2e2Rls9axpynXBDPz2/T2JoYzy/f",
   server: false
 
+# Uploaded photos
+config :parc_epique, ParcEpique.Storage, root: Path.expand("../tmp/test_uploads", __DIR__)
+
 # Run Oban jobs explicitly in tests
 config :parc_epique, Oban, testing: :manual
 
