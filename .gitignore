@@ -38,3 +38,6 @@ npm-debug.log
 
 # Données exportées de Firebase (données personnelles)
 /export/
+
+# Uploaded photos in development
+/uploads/
