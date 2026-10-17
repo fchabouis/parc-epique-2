@@ -15,6 +15,9 @@ config :parc_epique,
 config :parc_epique, ParcEpique.Repo, types: ParcEpique.PostgrexTypes
 
 # Background jobs (thumbnails, imports)
+# MapLibre style of the map's vector tiles.
+config :parc_epique, :map_style_url, "https://tuiles.enliberte.fr/styles/liberty"
+
 config :parc_epique, Oban,
   repo: ParcEpique.Repo,
   queues: [default: 10, media: 2, imports: 1]

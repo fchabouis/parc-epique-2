@@ -25,6 +25,7 @@ defmodule ParcEpiqueWeb.MapLive do
           id="map"
           phx-hook="Map"
           phx-update="ignore"
+          data-style-url={Application.fetch_env!(:parc_epique, :map_style_url)}
           data-locate-label={gettext("Show my position")}
           class="h-[calc(100dvh-4rem)] w-full"
         >
