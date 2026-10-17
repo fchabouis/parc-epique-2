@@ -174,4 +174,30 @@ defmodule ParcEpique.Playgrounds do
         {:ok, report}
     end
   end
+
+  @doc """
+  Stores an uploaded image file as a photo of the playground and queues its
+  thumbnail. The photo is unverified until an administrator checks it and is
+  shown meanwhile, as on the old site.
+
+  Returns `{:error, :unsupported}` when the file is not an image.
+  """
+  def add_photo(%Playground{} = playground, %ParcEpique.Accounts.User{} = user, source_path) do
+    case ParcEpique.Media.extension(source_path) do
+      nil ->
+        {:error, :unsupported}
+
+      extension ->
+        key = "photos/#{playground.id}/#{Ecto.UUID.generate()}#{extension}"
+
+        with :ok <- ParcEpique.Storage.put_file(source_path, key),
+             {:ok, photo} <-
+               %Photo{playground_id: playground.id, user_id: user.id, path: key, verified: false}
+               |> Photo.changeset(%{})
+               |> Repo.insert(),
+             {:ok, _job} <- ParcEpique.Workers.GenerateThumbnail.enqueue(photo) do
+          {:ok, photo}
+        end
+    end
+  end
 end

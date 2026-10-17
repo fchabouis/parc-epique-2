@@ -16,9 +16,19 @@ defmodule ParcEpiqueWeb.MapLive do
   alias ParcEpiqueWeb.PlaygroundComponents
 
   @limit 3000
+  @max_photo_size 15_000_000
 
   @impl true
   def mount(_params, _session, socket) do
+    socket =
+      allow_upload(socket, :photo,
+        accept: ~w(.jpg .jpeg .png .webp .gif .heic),
+        max_entries: 1,
+        max_file_size: @max_photo_size,
+        auto_upload: true,
+        progress: &handle_progress/3
+      )
+
     {:ok,
      assign(socket,
        truncated: false,
@@ -100,6 +110,7 @@ defmodule ParcEpiqueWeb.MapLive do
             register_prompt={@register_prompt}
             detail_form={@detail_form}
             confirm_report={@confirm_report}
+            upload={@uploads.photo}
           />
         </aside>
       </div>
@@ -167,6 +178,12 @@ defmodule ParcEpiqueWeb.MapLive do
 
     form = review |> Kernel.||(%Review{}) |> Playgrounds.change_review() |> to_form()
     {:noreply, assign(socket, review_form: form, register_prompt: false)}
+  end
+
+  def handle_event("validate_photo", _params, socket), do: {:noreply, socket}
+
+  def handle_event("cancel_photo", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :photo, ref)}
   end
 
   def handle_event("new_detail", _params, socket) do
@@ -258,6 +275,35 @@ defmodule ParcEpiqueWeb.MapLive do
         {:noreply, assign(socket, review_form: to_form(changeset))}
     end
   end
+
+  # Called as the browser sends the photo; the entry is done when it has all arrived.
+  defp handle_progress(
+         :photo,
+         %{done?: true} = entry,
+         %{assigns: %{playground: %{} = p}} = socket
+       ) do
+    {user, guest?} = contributor!(socket)
+
+    result =
+      consume_uploaded_entry(socket, entry, fn %{path: path} ->
+        {:ok, Playgrounds.add_photo(p, user, path)}
+      end)
+
+    case result do
+      {:ok, _photo} ->
+        playground = Playgrounds.get_visible_playground!(p.id)
+
+        {:noreply,
+         socket
+         |> assign(playground: playground, register_prompt: guest?)
+         |> put_flash(:info, gettext("Thank you for your photo!"))}
+
+      {:error, _reason} ->
+        {:noreply, put_flash(socket, :error, gettext("This file is not a supported image."))}
+    end
+  end
+
+  defp handle_progress(:photo, _entry, socket), do: {:noreply, socket}
 
   defp marker(%{
          id: id,

@@ -459,3 +459,18 @@ msgstr "Oui, elle n'existe plus"
 
 msgid "Thank you, your report will be checked."
 msgstr "Merci, votre signalement sera vérifié."
+
+msgid "Thank you for your photo!"
+msgstr "Merci pour votre photo !"
+
+msgid "This file is not a supported image."
+msgstr "Ce fichier n'est pas une image prise en charge."
+
+msgid "This photo is too large (15 MB at most)."
+msgstr "Cette photo est trop lourde (15 Mo au maximum)."
+
+msgid "Send one photo at a time."
+msgstr "Envoyez une photo à la fois."
+
+msgid "The photo could not be sent."
+msgstr "La photo n'a pas pu être envoyée."

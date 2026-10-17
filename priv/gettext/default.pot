@@ -435,3 +435,18 @@ msgstr ""
 
 msgid "Thank you, your report will be checked."
 msgstr ""
+
+msgid "Thank you for your photo!"
+msgstr ""
+
+msgid "This file is not a supported image."
+msgstr ""
+
+msgid "This photo is too large (15 MB at most)."
+msgstr ""
+
+msgid "Send one photo at a time."
+msgstr ""
+
+msgid "The photo could not be sent."
+msgstr ""

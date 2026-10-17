@@ -14,6 +14,7 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
   attr :register_prompt, :boolean, default: false, doc: "invite a guest to sign up"
   attr :detail_form, :any, default: nil, doc: "the details form, when open"
   attr :confirm_report, :boolean, default: false, doc: "ask to confirm the removal report"
+  attr :upload, :any, required: true, doc: "the photo upload (Phoenix.LiveView.UploadConfig)"
 
   def playground_sheet(assigns) do
     assigns = assign(assigns, :detail, List.first(assigns.playground.details))
@@ -244,7 +245,31 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
             </button>
           </li>
         </ul>
-        <.coming_soon label={gettext("Add a photo")} />
+        <form id="photo-form" phx-change="validate_photo" class="space-y-2">
+          <label class="btn btn-ghost btn-sm">
+            <.icon name="hero-camera" class="size-4" /> {gettext("Add a photo")}
+            <.live_file_input upload={@upload} class="sr-only" capture="environment" />
+          </label>
+          <div :for={entry <- @upload.entries} id={"upload-#{entry.ref}"} class="space-y-1">
+            <progress class="progress progress-primary w-full" value={entry.progress} max="100">
+              {entry.progress}%
+            </progress>
+            <p :for={err <- upload_errors(@upload, entry)} class="text-sm text-error">
+              {upload_error_message(err)}
+            </p>
+            <button
+              type="button"
+              class="btn btn-ghost btn-xs"
+              phx-click="cancel_photo"
+              phx-value-ref={entry.ref}
+            >
+              {gettext("Cancel")}
+            </button>
+          </div>
+          <p :for={err <- upload_errors(@upload)} class="text-sm text-error">
+            {upload_error_message(err)}
+          </p>
+        </form>
       </section>
 
       <section class="border-t border-base-300 pt-4">
@@ -270,6 +295,11 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
     </article>
     """
   end
+
+  defp upload_error_message(:too_large), do: gettext("This photo is too large (15 MB at most).")
+  defp upload_error_message(:not_accepted), do: gettext("This file is not a supported image.")
+  defp upload_error_message(:too_many_files), do: gettext("Send one photo at a time.")
+  defp upload_error_message(_error), do: gettext("The photo could not be sent.")
 
   defp field_errors(field) do
     if Phoenix.Component.used_input?(field) or field.form.source.action in [:insert, :validate],
@@ -330,17 +360,6 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
   end
 
   defp to_rating(_value), do: nil
-
-  # The other contribution forms come with issues #10 to #12.
-  attr :label, :string, required: true
-
-  defp coming_soon(assigns) do
-    ~H"""
-    <button type="button" class="btn btn-ghost btn-sm" disabled title={gettext("Coming soon")}>
-      {@label}
-    </button>
-    """
-  end
 
   attr :photo, :map, required: true
 
