@@ -53,6 +53,7 @@ defmodule ParcEpiqueWeb.MapLive do
           id="map"
           phx-hook="Map"
           phx-update="ignore"
+          data-style-url={Application.fetch_env!(:parc_epique, :map_style_url)}
           data-locate-label={gettext("Show my position")}
           data-focus-lat={@playground && PlaygroundComponents.lat(@playground)}
           data-focus-lng={@playground && PlaygroundComponents.lng(@playground)}

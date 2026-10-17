@@ -1,28 +1,12 @@
-import L from "../../vendor/leaflet-global.js"
-import "../../vendor/leaflet.markercluster/leaflet.markercluster-src.js"
+import maplibregl from "../../vendor/maplibre-gl/maplibre-gl.js"
 
 const DEFAULT_VIEW = {lat: 48.85, lng: 2.34, zoom: 13}
+const FOCUS_ZOOM = 17
 const VIEW_KEY = "parc-epique:view"
-const TILES_KEY = "parc-epique:tiles"
-const OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
-const TILES = {
-  "OpenStreetMap": {
-    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    attribution: OSM_ATTRIBUTION,
-    maxZoom: 19,
-  },
-  "OSM France": {
-    url: "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
-    attribution: `${OSM_ATTRIBUTION}, tuiles OSM France`,
-    maxZoom: 20,
-  },
-  "Humanitarian": {
-    url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-    attribution: `${OSM_ATTRIBUTION}, tuiles Humanitarian OSM Team`,
-    maxZoom: 20,
-  },
-}
+const COLOR = "#b6c4bd"
+const REVIEWED_COLOR = "#1bd980"
+const CLUSTER_COLOR = "#0f9d58"
 
 const storage = {
   get(key) {
@@ -33,51 +17,65 @@ const storage = {
   },
 }
 
-const icon = (reviewed) =>
-  L.divIcon({
-    className: reviewed ? "pe-marker pe-marker--reviewed" : "pe-marker",
-    iconSize: reviewed ? [20, 20] : [14, 14],
-  })
+const savedView = () => {
+  const saved = storage.get(VIEW_KEY)
+  return saved && Number.isFinite(saved.lat) && Number.isFinite(saved.lng) ? saved : null
+}
 
-const FOCUS_ZOOM = 17
-
-// Map of playgrounds: sends the visible bounds to the LiveView ("bounds") and
-// draws the playgrounds it pushes back ("playgrounds"). A click on a marker
-// opens its sheet ("open"); when a playground opens, "focus" brings it into view.
+// Map of playgrounds (MapLibre GL): sends the visible bounds to the LiveView
+// ("bounds") and draws the playgrounds it pushes back ("playgrounds") as a
+// clustered GeoJSON source. A click on a playground opens its sheet ("open");
+// when a playground opens, "focus" brings it into view.
 export const MapHook = {
   mounted() {
-    const saved = storage.get(VIEW_KEY)
+    const saved = savedView()
     const focus = {lat: parseFloat(this.el.dataset.focusLat), lng: parseFloat(this.el.dataset.focusLng)}
     const focused = Number.isFinite(focus.lat) && Number.isFinite(focus.lng)
-    const view = focused
-      ? {...focus, zoom: FOCUS_ZOOM}
-      : saved && Number.isFinite(saved.lat) && Number.isFinite(saved.lng) ? saved : DEFAULT_VIEW
+    const view = focused ? {...focus, zoom: FOCUS_ZOOM} : saved || DEFAULT_VIEW
 
-    this.map = L.map(this.el).setView([view.lat, view.lng], view.zoom || DEFAULT_VIEW.zoom)
-    this.addTiles()
-    this.addLocateControl()
+    this.features = new Map()
+    this.map = new maplibregl.Map({
+      container: this.el,
+      style: this.el.dataset.styleUrl,
+      center: [view.lng, view.lat],
+      zoom: view.zoom || DEFAULT_VIEW.zoom,
+      attributionControl: {compact: true},
+      locale: {
+        "GeolocateControl.FindMyLocation": this.el.dataset.locateLabel,
+        "GeolocateControl.LocationNotAvailable": this.el.dataset.locateLabel,
+      },
+    })
+    this.map.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-left")
 
-    this.cluster = L.markerClusterGroup({showCoverageOnHover: false, maxClusterRadius: 45, disableClusteringAtZoom: 16})
-    this.map.addLayer(this.cluster)
-    this.markers = new Map()
+    this.geolocate = new maplibregl.GeolocateControl({
+      positionOptions: {enableHighAccuracy: true},
+      trackUserLocation: false,
+      fitBoundsOptions: {maxZoom: 15},
+    })
+    this.map.addControl(this.geolocate, "top-left")
+
+    this.map.on("load", () => {
+      this.addPlaygroundLayers()
+      this.handleEvent("playgrounds", ({playgrounds}) => this.draw(playgrounds))
+      this.pushBounds()
+      if (!saved && !focused) this.geolocate.trigger()
+    })
+
+    this.handleEvent("focus", ({lat, lng}) => {
+      if (!this.map.getBounds().contains([lng, lat])) {
+        this.map.jumpTo({center: [lng, lat], zoom: Math.max(this.map.getZoom(), FOCUS_ZOOM)})
+      }
+    })
+
+    // The sheet takes room from the map on wide screens.
+    this.resizeObserver = new ResizeObserver(() => this.map.resize())
+    this.resizeObserver.observe(this.el)
 
     this.map.on("moveend", () => {
       const center = this.map.getCenter()
       storage.set(VIEW_KEY, {lat: center.lat, lng: center.lng, zoom: this.map.getZoom()})
-      this.pushBounds()
+      if (this.map.isStyleLoaded()) this.pushBounds()
     })
-
-    this.handleEvent("playgrounds", ({playgrounds}) => this.draw(playgrounds))
-    this.handleEvent("focus", ({lat, lng}) => {
-      if (!this.map.getBounds().contains([lat, lng])) this.map.setView([lat, lng], Math.max(this.map.getZoom(), FOCUS_ZOOM))
-    })
-    this.pushBounds()
-
-    // The sheet takes room from the map on wide screens.
-    this.resizeObserver = new ResizeObserver(() => this.map.invalidateSize())
-    this.resizeObserver.observe(this.el)
-
-    if (!saved && !focused) this.locate({fly: true})
   },
 
   destroyed() {
@@ -85,53 +83,67 @@ export const MapHook = {
     if (this.map) this.map.remove()
   },
 
-  addTiles() {
-    const layers = {}
-    for (const [name, {url, attribution, maxZoom}] of Object.entries(TILES)) {
-      layers[name] = L.tileLayer(url, {attribution, maxZoom})
-    }
-    const savedName = storage.get(TILES_KEY)
-    ;(layers[savedName] || layers["OpenStreetMap"]).addTo(this.map)
-    L.control.layers(layers, null, {position: "topright"}).addTo(this.map)
-    this.map.on("baselayerchange", (e) => storage.set(TILES_KEY, e.name))
-  },
+  addPlaygroundLayers() {
+    const map = this.map
+    map.addSource("playgrounds", {
+      type: "geojson",
+      data: {type: "FeatureCollection", features: []},
+      cluster: true,
+      clusterRadius: 45,
+      clusterMaxZoom: 15,
+    })
 
-  addLocateControl() {
-    const hook = this
-    const Locate = L.Control.extend({
-      options: {position: "topleft"},
-      onAdd() {
-        const button = L.DomUtil.create("button", "leaflet-bar pe-locate")
-        button.type = "button"
-        button.title = hook.el.dataset.locateLabel
-        button.setAttribute("aria-label", hook.el.dataset.locateLabel)
-        button.textContent = "◎"
-        L.DomEvent.disableClickPropagation(button)
-        L.DomEvent.on(button, "click", () => hook.locate({fly: true}))
-        return button
+    map.addLayer({
+      id: "clusters",
+      type: "circle",
+      source: "playgrounds",
+      filter: ["has", "point_count"],
+      paint: {
+        "circle-color": CLUSTER_COLOR,
+        "circle-opacity": 0.85,
+        "circle-stroke-color": "#ffffff",
+        "circle-stroke-width": 2,
+        "circle-radius": ["step", ["get", "point_count"], 14, 10, 18, 100, 24],
       },
     })
-    this.map.addControl(new Locate())
-  },
 
-  locate({fly}) {
-    if (!navigator.geolocation) return
+    map.addLayer({
+      id: "cluster-count",
+      type: "symbol",
+      source: "playgrounds",
+      filter: ["has", "point_count"],
+      layout: {"text-field": ["get", "point_count_abbreviated"], "text-size": 12},
+      paint: {"text-color": "#ffffff"},
+    })
 
-    navigator.geolocation.getCurrentPosition(
-      ({coords}) => {
-        const latlng = [coords.latitude, coords.longitude]
-        if (this.position) {
-          this.position.setLatLng(latlng)
-          this.accuracy.setLatLng(latlng).setRadius(coords.accuracy)
-        } else {
-          this.accuracy = L.circle(latlng, {radius: coords.accuracy, stroke: false, fillOpacity: 0.08}).addTo(this.map)
-          this.position = L.circleMarker(latlng, {radius: 6, stroke: false, fillColor: "#2563eb", fillOpacity: 0.9}).addTo(this.map)
-        }
-        if (fly) this.map.flyTo(latlng, Math.max(this.map.getZoom(), 15))
+    map.addLayer({
+      id: "playgrounds",
+      type: "circle",
+      source: "playgrounds",
+      filter: ["!", ["has", "point_count"]],
+      paint: {
+        "circle-color": ["case", ["get", "reviewed"], REVIEWED_COLOR, COLOR],
+        "circle-radius": ["case", ["get", "reviewed"], 9, 6],
+        "circle-stroke-color": "#ffffff",
+        "circle-stroke-width": 2,
       },
-      () => {},
-      {enableHighAccuracy: true, timeout: 10000},
-    )
+    })
+
+    map.on("click", "clusters", async (e) => {
+      const [cluster] = map.queryRenderedFeatures(e.point, {layers: ["clusters"]})
+      const zoom = await map.getSource("playgrounds").getClusterExpansionZoom(cluster.properties.cluster_id)
+      map.easeTo({center: cluster.geometry.coordinates, zoom})
+    })
+
+    map.on("click", "playgrounds", (e) => {
+      const [playground] = e.features
+      this.pushEvent("open", {id: playground.properties.id})
+    })
+
+    for (const layer of ["clusters", "playgrounds"]) {
+      map.on("mouseenter", layer, () => { map.getCanvas().style.cursor = "pointer" })
+      map.on("mouseleave", layer, () => { map.getCanvas().style.cursor = "" })
+    }
   },
 
   pushBounds() {
@@ -145,15 +157,20 @@ export const MapHook = {
   },
 
   draw(playgrounds) {
-    const added = []
+    let added = false
     for (const {id, lat, lng, name, reviewed} of playgrounds) {
-      if (this.markers.has(id)) continue
-      const marker = L.marker([lat, lng], {icon: icon(reviewed), zIndexOffset: reviewed ? 100 : 0, title: name})
-      marker.on("click", () => this.pushEvent("open", {id}))
-      this.markers.set(id, marker)
-      added.push(marker)
+      if (this.features.has(id)) continue
+      this.features.set(id, {
+        type: "Feature",
+        id,
+        geometry: {type: "Point", coordinates: [lng, lat]},
+        properties: {id, name, reviewed},
+      })
+      added = true
     }
-    this.cluster.addLayers(added)
+    if (added) {
+      this.map.getSource("playgrounds").setData({type: "FeatureCollection", features: [...this.features.values()]})
+    }
   },
 }
 
@@ -174,7 +191,8 @@ export const DistanceHook = {
   },
 
   show({latitude, longitude}) {
-    const meters = L.latLng(latitude, longitude).distanceTo([parseFloat(this.el.dataset.lat), parseFloat(this.el.dataset.lng)])
+    const target = new maplibregl.LngLat(parseFloat(this.el.dataset.lng), parseFloat(this.el.dataset.lat))
+    const meters = new maplibregl.LngLat(longitude, latitude).distanceTo(target)
     const lang = document.documentElement.lang || undefined
     const distance = meters < 1000
       ? `${Math.round(meters).toLocaleString(lang)} m`
