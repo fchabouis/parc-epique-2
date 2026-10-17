@@ -49,4 +49,20 @@ jobs:
 
       - run: mix compile --warnings-as-errors
       - run: mix format --check-formatted
-      - run: mix test
+      - name: mix test
+        run: mix test 2>&1 | tee test-output.txt; exit ${PIPESTATUS[0]}
+
+      - name: Import the public 2022 Firebase export
+        run: |
+          mkdir -p tmp
+          curl -sSfL -o tmp/base_repartage_2022_08_22.json https://raw.githubusercontent.com/fchabouis/parc-epique/master/base_repartage_2022_08_22.json
+          mix test --only legacy_export 2>&1 | tee test-output.txt; exit ${PIPESTATUS[0]}
+
+      # Job logs are not always readable; repeat the failing output as an annotation.
+      - name: Report test failures
+        if: failure()
+        run: |
+          if [ -f test-output.txt ]; then
+            body=$(grep -v '^\s*$' test-output.txt | tail -c 3500 | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=Test output::${body}"
+          fi
