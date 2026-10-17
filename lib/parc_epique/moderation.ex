@@ -36,10 +36,10 @@ defmodule ParcEpique.Moderation do
   end
 
   @doc "Keeps a playground added by a visitor."
-  def check_playground(id), do: update(Playground, id, checked: true)
+  def check_playground(id), do: change_record(Playground, id, checked: true)
 
   @doc "Hides a playground from the map and the site."
-  def hide_playground(id), do: update(Playground, id, status: "hidden", checked: true)
+  def hide_playground(id), do: change_record(Playground, id, status: "hidden", checked: true)
 
   ## Details
 
@@ -54,9 +54,9 @@ defmodule ParcEpique.Moderation do
     |> Repo.all()
   end
 
-  def validate_detail(id), do: update(Detail, id, status: "validated")
+  def validate_detail(id), do: change_record(Detail, id, status: "validated")
 
-  def reject_detail(id), do: update(Detail, id, status: "rejected")
+  def reject_detail(id), do: change_record(Detail, id, status: "rejected")
 
   ## Photos
 
@@ -71,7 +71,7 @@ defmodule ParcEpique.Moderation do
     |> Repo.all()
   end
 
-  def verify_photo(id), do: update(Photo, id, verified: true)
+  def verify_photo(id), do: change_record(Photo, id, verified: true)
 
   @doc "Deletes a photo, its thumbnail and their files."
   def delete_photo(id) do
@@ -127,7 +127,7 @@ defmodule ParcEpique.Moderation do
     end
   end
 
-  def reject_report(id), do: update(RemovalReport, id, status: "rejected")
+  def reject_report(id), do: change_record(RemovalReport, id, status: "rejected")
 
   ## Reviews
 
@@ -181,7 +181,7 @@ defmodule ParcEpique.Moderation do
     |> Repo.all()
   end
 
-  defp update(schema, id, changes) do
+  defp change_record(schema, id, changes) do
     case Repo.get(schema, id) do
       nil -> {:error, :not_found}
       record -> record |> Ecto.Changeset.change(changes) |> Repo.update()
