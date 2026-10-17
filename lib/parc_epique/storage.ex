@@ -25,6 +25,15 @@ defmodule ParcEpique.Storage do
     end
   end
 
+  @doc "Deletes the file at `key`; a file that is already gone is fine."
+  def delete(key) do
+    case File.rm(path(key)) do
+      :ok -> :ok
+      {:error, :enoent} -> :ok
+      error -> error
+    end
+  end
+
   defp safe_key!(key) do
     if key == "" or Path.type(key) != :relative or ".." in Path.split(key) do
       raise ArgumentError, "invalid storage key: #{inspect(key)}"

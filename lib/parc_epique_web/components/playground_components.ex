@@ -130,22 +130,7 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
         <p :if={!described?(@detail)} class="italic">
           {gettext("This playground has no description yet. Your turn!")}
         </p>
-        <div :if={described?(@detail)} class="space-y-2">
-          <p :if={!is_nil(@detail.free)}>
-            {if @detail.free, do: gettext("Free"), else: gettext("Paid")}
-          </p>
-          <p :if={!is_nil(@detail.open_at_night)}>
-            {if @detail.open_at_night, do: gettext("Open at night"), else: gettext("Closed at night")}
-          </p>
-          <p :if={!is_nil(@detail.private)}>
-            {if @detail.private, do: gettext("Private"), else: gettext("Public")}
-          </p>
-          <ul :if={@detail.equipment != []} class="flex flex-wrap gap-2">
-            <li :for={code <- @detail.equipment} class="badge badge-primary badge-soft">
-              {equipment_label(code)}
-            </li>
-          </ul>
-        </div>
+        <.detail_facts :if={described?(@detail)} detail={@detail} />
         <.form
           :if={@detail_form}
           for={@detail_form}
@@ -436,6 +421,30 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
         "destination" => "#{lat(playground)},#{lng(playground)}",
         "travelmode" => "walking"
       })
+  end
+
+  attr :detail, :map, required: true
+
+  @doc "What a details record says: price, night opening, access and equipment."
+  def detail_facts(assigns) do
+    ~H"""
+    <div class="space-y-2">
+      <p :if={!is_nil(@detail.free)}>
+        {if @detail.free, do: gettext("Free"), else: gettext("Paid")}
+      </p>
+      <p :if={!is_nil(@detail.open_at_night)}>
+        {if @detail.open_at_night, do: gettext("Open at night"), else: gettext("Closed at night")}
+      </p>
+      <p :if={!is_nil(@detail.private)}>
+        {if @detail.private, do: gettext("Private"), else: gettext("Public")}
+      </p>
+      <ul :if={@detail.equipment != []} class="flex flex-wrap gap-2">
+        <li :for={code <- @detail.equipment} class="badge badge-primary badge-soft">
+          {equipment_label(code)}
+        </li>
+      </ul>
+    </div>
+    """
   end
 
   defp described?(nil), do: false

@@ -474,3 +474,78 @@ msgstr "Envoyez une photo à la fois."
 
 msgid "The photo could not be sent."
 msgstr "La photo n'a pas pu être envoyée."
+
+msgid "Moderation"
+msgstr "Modération"
+
+msgid "Nothing here."
+msgstr "Rien à traiter ici."
+
+msgid "by %{author}, %{date}"
+msgstr "par %{author}, %{date}"
+
+msgid "Keep"
+msgstr "Garder"
+
+msgid "Hide"
+msgstr "Masquer"
+
+msgid "Hide this playground from the map?"
+msgstr "Masquer cette aire de la carte ?"
+
+msgid "Validate"
+msgstr "Valider"
+
+msgid "Reject"
+msgstr "Rejeter"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Delete this photo for good?"
+msgstr "Supprimer définitivement cette photo ?"
+
+msgid "Delete this review for good?"
+msgstr "Supprimer définitivement cet avis ?"
+
+msgid "is reported as no longer existing"
+msgstr "est signalée comme n'existant plus"
+
+msgid "Hide the playground"
+msgstr "Masquer l'aire"
+
+msgid "Dismiss the report"
+msgstr "Rejeter le signalement"
+
+msgid "Surroundings: %{surroundings}, equipment: %{equipment}"
+msgstr "Environnement : %{surroundings}, équipements : %{equipment}"
+
+msgid "Playground #%{id}"
+msgstr "Aire n° %{id}"
+
+msgid "a visitor"
+msgstr "un visiteur"
+
+msgid "Latest"
+msgstr "Derniers ajouts"
+
+msgid "New playgrounds"
+msgstr "Nouvelles aires"
+
+msgid "Reports"
+msgstr "Signalements"
+
+msgid "Reviews"
+msgstr "Avis"
+
+msgid "New playground"
+msgstr "Nouvelle aire"
+
+msgid "Photo"
+msgstr "Photo"
+
+msgid "Report"
+msgstr "Signalement"
+
+msgid "Review"
+msgstr "Avis"

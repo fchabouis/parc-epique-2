@@ -43,6 +43,13 @@ defmodule ParcEpiqueWeb.Layouts do
       </div>
       <nav class="flex flex-none items-center gap-1">
         <%= if @current_scope do %>
+          <.link
+            :if={ParcEpique.Accounts.Scope.admin?(@current_scope)}
+            href={~p"/#{Gettext.get_locale(ParcEpiqueWeb.Gettext)}/admin"}
+            class="btn btn-ghost btn-sm"
+          >
+            {gettext("Moderation")}
+          </.link>
           <.link href={~p"/users/settings"} class="btn btn-ghost btn-sm">
             {@current_scope.user.display_name || @current_scope.user.email}
           </.link>
