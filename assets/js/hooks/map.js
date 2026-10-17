@@ -1,4 +1,8 @@
 import maplibregl from "../../vendor/maplibre-gl/maplibre-gl.js"
+import {Protocol} from "../../vendor/pmtiles/pmtiles.js"
+
+// The tiles of tuiles.enliberte.fr are a single PMTiles archive (pmtiles:// URLs).
+maplibregl.addProtocol("pmtiles", new Protocol().tile)
 
 const DEFAULT_VIEW = {lat: 48.85, lng: 2.34, zoom: 13}
 const FOCUS_ZOOM = 17
