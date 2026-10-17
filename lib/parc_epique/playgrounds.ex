@@ -5,7 +5,7 @@ defmodule ParcEpique.Playgrounds do
 
   import Ecto.Query
 
-  alias ParcEpique.Playgrounds.Playground
+  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, Review}
   alias ParcEpique.Repo
 
   @doc """
@@ -46,5 +46,46 @@ defmodule ParcEpique.Playgrounds do
       |> Repo.all()
 
     {Enum.take(rows, limit), length(rows) > limit}
+  end
+
+  @doc """
+  Gets a visible playground with its reviews (newest first), photos (oldest
+  first) and validated details (newest first).
+
+  Raises `Ecto.NoResultsError` if there is no such visible playground.
+  """
+  def get_visible_playground!(id) do
+    reviews = from(r in Review, order_by: [desc: r.inserted_at, desc: r.id])
+    photos = from(ph in Photo, order_by: [asc: ph.inserted_at, asc: ph.id])
+
+    details =
+      from(d in Detail,
+        where: d.status == "validated",
+        order_by: [desc: d.inserted_at, desc: d.id]
+      )
+
+    from(p in Playground,
+      where: p.status == "visible",
+      preload: [reviews: ^reviews, photos: ^photos, details: ^details]
+    )
+    |> Repo.get!(id)
+  end
+
+  @doc """
+  Averages the surroundings and equipment ratings of `reviews`, ignoring
+  missing ones. An average is `nil` when no review has that rating.
+  """
+  def average_ratings(reviews) do
+    %{
+      surroundings: average(reviews, :rating_surroundings),
+      equipment: average(reviews, :rating_equipment)
+    }
+  end
+
+  defp average(reviews, field) do
+    case reviews |> Enum.map(&Map.get(&1, field)) |> Enum.reject(&is_nil/1) do
+      [] -> nil
+      ratings -> Enum.sum(ratings) / length(ratings)
+    end
   end
 end

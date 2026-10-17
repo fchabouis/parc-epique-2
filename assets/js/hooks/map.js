@@ -39,12 +39,19 @@ const icon = (reviewed) =>
     iconSize: reviewed ? [20, 20] : [14, 14],
   })
 
+const FOCUS_ZOOM = 17
+
 // Map of playgrounds: sends the visible bounds to the LiveView ("bounds") and
-// draws the playgrounds it pushes back ("playgrounds").
+// draws the playgrounds it pushes back ("playgrounds"). A click on a marker
+// opens its sheet ("open"); when a playground opens, "focus" brings it into view.
 export const MapHook = {
   mounted() {
     const saved = storage.get(VIEW_KEY)
-    const view = saved && Number.isFinite(saved.lat) && Number.isFinite(saved.lng) ? saved : DEFAULT_VIEW
+    const focus = {lat: parseFloat(this.el.dataset.focusLat), lng: parseFloat(this.el.dataset.focusLng)}
+    const focused = Number.isFinite(focus.lat) && Number.isFinite(focus.lng)
+    const view = focused
+      ? {...focus, zoom: FOCUS_ZOOM}
+      : saved && Number.isFinite(saved.lat) && Number.isFinite(saved.lng) ? saved : DEFAULT_VIEW
 
     this.map = L.map(this.el).setView([view.lat, view.lng], view.zoom || DEFAULT_VIEW.zoom)
     this.addTiles()
@@ -61,12 +68,20 @@ export const MapHook = {
     })
 
     this.handleEvent("playgrounds", ({playgrounds}) => this.draw(playgrounds))
+    this.handleEvent("focus", ({lat, lng}) => {
+      if (!this.map.getBounds().contains([lat, lng])) this.map.setView([lat, lng], Math.max(this.map.getZoom(), FOCUS_ZOOM))
+    })
     this.pushBounds()
 
-    if (!saved) this.locate({fly: true})
+    // The sheet takes room from the map on wide screens.
+    this.resizeObserver = new ResizeObserver(() => this.map.invalidateSize())
+    this.resizeObserver.observe(this.el)
+
+    if (!saved && !focused) this.locate({fly: true})
   },
 
   destroyed() {
+    if (this.resizeObserver) this.resizeObserver.disconnect()
     if (this.map) this.map.remove()
   },
 
@@ -134,7 +149,7 @@ export const MapHook = {
     for (const {id, lat, lng, name, reviewed} of playgrounds) {
       if (this.markers.has(id)) continue
       const marker = L.marker([lat, lng], {icon: icon(reviewed), zIndexOffset: reviewed ? 100 : 0, title: name})
-      marker.bindPopup(`<strong>${escapeHtml(name)}</strong>`)
+      marker.on("click", () => this.pushEvent("open", {id}))
       this.markers.set(id, marker)
       added.push(marker)
     }
@@ -142,8 +157,29 @@ export const MapHook = {
   },
 }
 
-function escapeHtml(text) {
-  const div = document.createElement("div")
-  div.textContent = text
-  return div.innerHTML
+// Walking distance from the visitor to a playground, shown only when the
+// visitor already allowed geolocation (the map's locate button asks for it).
+export const DistanceHook = {
+  mounted() {
+    if (!navigator.geolocation || !navigator.permissions) return
+
+    navigator.permissions.query({name: "geolocation"}).then(({state}) => {
+      if (state !== "granted") return
+      navigator.geolocation.getCurrentPosition(
+        ({coords}) => this.show(coords),
+        () => {},
+        {maximumAge: 60000, timeout: 10000},
+      )
+    }).catch(() => {})
+  },
+
+  show({latitude, longitude}) {
+    const meters = L.latLng(latitude, longitude).distanceTo([parseFloat(this.el.dataset.lat), parseFloat(this.el.dataset.lng)])
+    const lang = document.documentElement.lang || undefined
+    const distance = meters < 1000
+      ? `${Math.round(meters).toLocaleString(lang)} m`
+      : `${(meters / 1000).toLocaleString(lang, {maximumFractionDigits: 1})} km`
+    this.el.textContent = this.el.dataset.template.replace("%{distance}", distance)
+    this.el.hidden = false
+  },
 }

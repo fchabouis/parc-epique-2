@@ -35,4 +35,32 @@ defmodule ParcEpique.PlaygroundsTest do
     assert first.id == reviewed.id
     assert first.reviewed
   end
+
+  test "averages ratings, ignoring missing ones" do
+    reviews = [
+      %Review{rating_surroundings: 4.0, rating_equipment: nil},
+      %Review{rating_surroundings: 3.0, rating_equipment: nil}
+    ]
+
+    assert Playgrounds.average_ratings(reviews) == %{surroundings: 3.5, equipment: nil}
+    assert Playgrounds.average_ratings([]) == %{surroundings: nil, equipment: nil}
+  end
+
+  test "gets a visible playground with its validated details only" do
+    playground = insert_playground(50.61, 3.01)
+    Repo.insert!(%ParcEpique.Playgrounds.Detail{playground_id: playground.id, status: "pending"})
+
+    validated =
+      Repo.insert!(%ParcEpique.Playgrounds.Detail{
+        playground_id: playground.id,
+        status: "validated"
+      })
+
+    assert %{details: [detail]} = Playgrounds.get_visible_playground!(playground.id)
+    assert detail.id == validated.id
+
+    hidden = insert_playground(50.62, 3.02, %{status: "hidden"})
+
+    assert_raise Ecto.NoResultsError, fn -> Playgrounds.get_visible_playground!(hidden.id) end
+  end
 end

@@ -29,3 +29,163 @@ msgstr "Tentative de reconnexion"
 
 msgid "Something went wrong!"
 msgstr "Une erreur s'est produite !"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "%{distance} on foot"
+msgstr "%{distance} à pied"
+
+msgid "Directions"
+msgstr "Itinéraire"
+
+msgid "Surroundings"
+msgstr "Cadre"
+
+msgid "Equipment"
+msgstr "Équipement"
+
+msgid "No rating yet, be the first to write a review!"
+msgstr "Pas encore de note, soyez le premier à rédiger un avis !"
+
+msgid "%{name}, on %{date}"
+msgstr "%{name}, le %{date}"
+
+msgid "Anonymous"
+msgstr "Anonyme"
+
+msgid "Write a review"
+msgstr "Rédiger un avis"
+
+msgid "Details"
+msgstr "Description"
+
+msgid "This playground has no description yet. Your turn!"
+msgstr "La description de cette aire est inconnue pour le moment. À vous de jouer !"
+
+msgid "Free"
+msgstr "Gratuite"
+
+msgid "Paid"
+msgstr "Payante"
+
+msgid "Open at night"
+msgstr "Ouverte la nuit"
+
+msgid "Closed at night"
+msgstr "Fermée la nuit"
+
+msgid "Private"
+msgstr "Privée"
+
+msgid "Public"
+msgstr "Publique"
+
+msgid "Suggest a change"
+msgstr "Suggérer une modification"
+
+msgid "Photos"
+msgstr "Photos"
+
+msgid "Enlarge the photo"
+msgstr "Agrandir la photo"
+
+msgid "Add a photo"
+msgstr "Ajouter une photo"
+
+msgid "Report that this playground no longer exists"
+msgstr "Signaler que cette aire n'existe plus"
+
+msgid "Coming soon"
+msgstr "Bientôt disponible"
+
+msgid "Not rated"
+msgstr "Pas de note"
+
+msgid "%{rating} out of 5"
+msgstr "%{rating} sur 5"
+
+msgid "%{month} %{day}, %{year}"
+msgstr "%{day} %{month} %{year}"
+
+msgid "January"
+msgstr "janvier"
+
+msgid "February"
+msgstr "février"
+
+msgid "March"
+msgstr "mars"
+
+msgid "April"
+msgstr "avril"
+
+msgid "May"
+msgstr "mai"
+
+msgid "June"
+msgstr "juin"
+
+msgid "July"
+msgstr "juillet"
+
+msgid "August"
+msgstr "août"
+
+msgid "September"
+msgstr "septembre"
+
+msgid "October"
+msgstr "octobre"
+
+msgid "November"
+msgstr "novembre"
+
+msgid "December"
+msgstr "décembre"
+
+msgid "Slide"
+msgstr "Toboggan"
+
+msgid "Spring rider"
+msgstr "Cheval à bascule"
+
+msgid "Climbing frame"
+msgstr "Escalade"
+
+msgid "Rope bridge"
+msgstr "Pont de singe"
+
+msgid "Drinking fountain"
+msgstr "Fontaine"
+
+msgid "Toilets"
+msgstr "Toilettes"
+
+msgid "Sandpit"
+msgstr "Bac à sable"
+
+msgid "Table tennis"
+msgstr "Table de ping-pong"
+
+msgid "Football pitch"
+msgstr "Terrain de foot"
+
+msgid "Basketball court"
+msgstr "Terrain de basket"
+
+msgid "Pétanque court"
+msgstr "Terrain de pétanque"
+
+msgid "Playhouse"
+msgstr "Cabane"
+
+msgid "Car track"
+msgstr "Circuit de voitures"
+
+msgid "Roundabout"
+msgstr "Tourniquet"
+
+msgctxt "decimal separator"
+msgid "."
+msgstr ","
