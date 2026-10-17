@@ -6,22 +6,7 @@ defmodule ParcEpiqueWeb.PageHTML do
 
   alias ParcEpiqueWeb.PlaygroundComponents
 
-  @osm_copyright_url "https://www.openstreetmap.org/copyright"
-  @odbl_url "https://opendatacommons.org/licenses/odbl/1-0/"
-  @code_url "https://github.com/fchabouis/parc-epique-2"
-  @article_url "https://medium.com/cr%C3%A9ation-dune-app-cartographique-avec-firebase-vue/cr%C3%A9ation-dune-app-cartographique-avec-firebase-vue-js-et-leaflet-868e9ea1b958"
-  @facebook_url "https://www.facebook.com/ParcEpique/"
-
   def about(assigns) do
-    assigns =
-      assign(assigns,
-        osm_copyright_url: @osm_copyright_url,
-        odbl_url: @odbl_url,
-        code_url: @code_url,
-        article_url: @article_url,
-        facebook_url: @facebook_url
-      )
-
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <article id="about" class="space-y-4 leading-relaxed">
@@ -66,12 +51,14 @@ defmodule ParcEpiqueWeb.PageHTML do
         </p>
         <ul class="list-inside list-disc">
           <li>
-            <a href={@osm_copyright_url} class="link" rel="noopener">
+            <a href="https://www.openstreetmap.org/copyright" class="link" rel="noopener">
               {gettext("OpenStreetMap copyright")}
             </a>
           </li>
           <li>
-            <a href={@odbl_url} class="link" rel="noopener">{gettext("Text of the ODbL")}</a>
+            <a href="https://opendatacommons.org/licenses/odbl/1-0/" class="link" rel="noopener">{gettext(
+              "Text of the ODbL"
+            )}</a>
           </li>
         </ul>
         <p>
@@ -120,19 +107,29 @@ defmodule ParcEpiqueWeb.PageHTML do
         </p>
         <ul class="list-inside list-disc">
           <li>
-            <a href={@code_url} class="link" target="_blank" rel="noopener">
+            <a
+              href="https://github.com/fchabouis/parc-epique-2"
+              class="link"
+              target="_blank"
+              rel="noopener"
+            >
               {gettext("Source code on GitHub")}
             </a>
           </li>
           <li>
-            <a href={@article_url} class="link" target="_blank" rel="noopener">
+            <a
+              href="https://medium.com/cr%C3%A9ation-dune-app-cartographique-avec-firebase-vue/cr%C3%A9ation-dune-app-cartographique-avec-firebase-vue-js-et-leaflet-868e9ea1b958"
+              class="link"
+              target="_blank"
+              rel="noopener"
+            >
               {gettext("Technical article on Medium")}
             </a>
           </li>
         </ul>
         <h3 class="pt-2 text-lg font-medium">{gettext("A contact?")}</h3>
         <p>
-          <a href={@facebook_url} class="link" target="_blank" rel="noopener">
+          <a href="https://www.facebook.com/ParcEpique/" class="link" target="_blank" rel="noopener">
             {gettext("To reach me, use the Parc Épique Facebook page")}
           </a>
         </p>
