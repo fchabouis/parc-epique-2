@@ -12,8 +12,8 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
         |> log_in_user(user_fixture())
         |> live(~p"/users/settings")
 
-      assert html =~ "Change Email"
-      assert html =~ "Save Password"
+      assert html =~ "Changer d&#39;adresse e-mail"
+      assert html =~ "Enregistrer le mot de passe"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
@@ -21,7 +21,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log-in"
-      assert %{"error" => "You must log in to access this page."} = flash
+      assert %{"error" => "Connectez-vous pour accéder à cette page."} = flash
     end
 
     test "redirects if user is not in sudo mode", %{conn: conn} do
@@ -33,7 +33,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
         |> live(~p"/users/settings")
         |> follow_redirect(conn, ~p"/users/log-in")
 
-      assert conn.resp_body =~ "You must re-authenticate to access this page."
+      assert conn.resp_body =~ "Reconnectez-vous pour accéder à cette page."
     end
   end
 
@@ -55,7 +55,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
         })
         |> render_submit()
 
-      assert result =~ "A link to confirm your email"
+      assert result =~ "Un lien pour confirmer le changement"
       assert Accounts.get_user_by_email(user.email)
     end
 
@@ -70,8 +70,8 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
           "user" => %{"email" => "with spaces"}
         })
 
-      assert result =~ "Change Email"
-      assert result =~ "must have the @ sign and no spaces"
+      assert result =~ "Changer d&#39;adresse e-mail"
+      assert result =~ "doit contenir un @ et aucune espace"
     end
 
     test "renders errors with invalid data (phx-submit)", %{conn: conn, user: user} do
@@ -84,8 +84,8 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
         })
         |> render_submit()
 
-      assert result =~ "Change Email"
-      assert result =~ "did not change"
+      assert result =~ "Changer d&#39;adresse e-mail"
+      assert result =~ "a pas changé"
     end
   end
 
@@ -118,7 +118,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
       assert get_session(new_password_conn, :user_token) != get_session(conn, :user_token)
 
       assert Phoenix.Flash.get(new_password_conn.assigns.flash, :info) =~
-               "Password updated successfully"
+               "Mot de passe modifié"
 
       assert Accounts.get_user_by_email_and_password(user.email, new_password)
     end
@@ -136,9 +136,9 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
           }
         })
 
-      assert result =~ "Save Password"
-      assert result =~ "should be at least 12 character(s)"
-      assert result =~ "does not match password"
+      assert result =~ "Enregistrer le mot de passe"
+      assert result =~ "doit faire au moins 12 caractères"
+      assert result =~ "ne correspond pas au mot de passe"
     end
 
     test "renders errors with invalid data (phx-submit)", %{conn: conn} do
@@ -154,9 +154,9 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
         })
         |> render_submit()
 
-      assert result =~ "Save Password"
-      assert result =~ "should be at least 12 character(s)"
-      assert result =~ "does not match password"
+      assert result =~ "Enregistrer le mot de passe"
+      assert result =~ "doit faire au moins 12 caractères"
+      assert result =~ "ne correspond pas au mot de passe"
     end
   end
 
@@ -179,7 +179,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/settings"
       assert %{"info" => message} = flash
-      assert message == "Email changed successfully."
+      assert message == "Adresse e-mail modifiée."
       refute Accounts.get_user_by_email(user.email)
       assert Accounts.get_user_by_email(email)
 
@@ -188,7 +188,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/settings"
       assert %{"error" => message} = flash
-      assert message == "Email change link is invalid or it has expired."
+      assert message == "Le lien de changement d'adresse est invalide ou a expiré."
     end
 
     test "does not update email with invalid token", %{conn: conn, user: user} do
@@ -196,7 +196,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/settings"
       assert %{"error" => message} = flash
-      assert message == "Email change link is invalid or it has expired."
+      assert message == "Le lien de changement d'adresse est invalide ou a expiré."
       assert Accounts.get_user_by_email(user.email)
     end
 
@@ -206,7 +206,7 @@ defmodule ParcEpiqueWeb.UserLive.SettingsTest do
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log-in"
       assert %{"error" => message} = flash
-      assert message == "You must log in to access this page."
+      assert message == "Connectez-vous pour accéder à cette page."
     end
   end
 end

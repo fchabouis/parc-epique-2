@@ -1,5 +1,6 @@
 defmodule ParcEpique.Accounts.UserNotifier do
   import Swoosh.Email
+  use Gettext, backend: ParcEpiqueWeb.Gettext
 
   alias ParcEpique.Mailer
   alias ParcEpique.Accounts.User
@@ -9,7 +10,9 @@ defmodule ParcEpique.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"ParcEpique", "contact@example.com"})
+      |> from(
+        Application.get_env(:parc_epique, :mail_from, {"Parc Épique", "contact@parc-epique.fr"})
+      )
       |> subject(subject)
       |> text_body(body)
 
@@ -18,24 +21,38 @@ defmodule ParcEpique.Accounts.UserNotifier do
     end
   end
 
+  defp body(text) do
+    """
+
+    ==============================
+    #{text}
+    ==============================
+    """
+  end
+
   @doc """
   Deliver instructions to update a user email.
   """
   def deliver_update_email_instructions(user, url) do
-    deliver(user.email, "Update email instructions", """
+    deliver(
+      user.email,
+      gettext("Update email instructions"),
+      body(
+        gettext(
+          """
+          Hi %{email},
 
-    ==============================
+          You can change your email by visiting the URL below:
 
-    Hi #{user.email},
+          %{url}
 
-    You can change your email by visiting the URL below:
-
-    #{url}
-
-    If you didn't request this change, please ignore this.
-
-    ==============================
-    """)
+          If you didn't request this change, please ignore this.
+          """,
+          email: user.email,
+          url: url
+        )
+      )
+    )
   end
 
   @doc """
@@ -49,36 +66,46 @@ defmodule ParcEpique.Accounts.UserNotifier do
   end
 
   defp deliver_magic_link_instructions(user, url) do
-    deliver(user.email, "Log in instructions", """
+    deliver(
+      user.email,
+      gettext("Log in instructions"),
+      body(
+        gettext(
+          """
+          Hi %{email},
 
-    ==============================
+          You can log into your account by visiting the URL below:
 
-    Hi #{user.email},
+          %{url}
 
-    You can log into your account by visiting the URL below:
-
-    #{url}
-
-    If you didn't request this email, please ignore this.
-
-    ==============================
-    """)
+          If you didn't request this email, please ignore this.
+          """,
+          email: user.email,
+          url: url
+        )
+      )
+    )
   end
 
   defp deliver_confirmation_instructions(user, url) do
-    deliver(user.email, "Confirmation instructions", """
+    deliver(
+      user.email,
+      gettext("Confirmation instructions"),
+      body(
+        gettext(
+          """
+          Hi %{email},
 
-    ==============================
+          You can confirm your account by visiting the URL below:
 
-    Hi #{user.email},
+          %{url}
 
-    You can confirm your account by visiting the URL below:
-
-    #{url}
-
-    If you didn't create an account with us, please ignore this.
-
-    ==============================
-    """)
+          If you didn't create an account with us, please ignore this.
+          """,
+          email: user.email,
+          url: url
+        )
+      )
+    )
   end
 end

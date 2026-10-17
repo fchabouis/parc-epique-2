@@ -186,3 +186,186 @@ msgstr ""
 msgctxt "decimal separator"
 msgid "."
 msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "You need to reauthenticate to perform sensitive actions on your account."
+msgstr ""
+
+msgid "Don't have an account?"
+msgstr ""
+
+msgid "Sign up"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Log in with email"
+msgstr ""
+
+msgid "Log in with Google"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Log in and stay logged in"
+msgstr ""
+
+msgid "Log in only this time"
+msgstr ""
+
+msgid "If your email is in our system, you will receive instructions for logging in shortly."
+msgstr ""
+
+msgid "Register for an account"
+msgstr ""
+
+msgid "Already registered?"
+msgstr ""
+
+msgid "Name shown on your contributions (optional)"
+msgstr ""
+
+msgid "Creating account..."
+msgstr ""
+
+msgid "Create an account"
+msgstr ""
+
+msgid "An email was sent to %{email}, please access it to confirm your account."
+msgstr ""
+
+msgid "Account Settings"
+msgstr ""
+
+msgid "Manage your account email address and password settings"
+msgstr ""
+
+msgid "Changing..."
+msgstr ""
+
+msgid "Change Email"
+msgstr ""
+
+msgid "New password"
+msgstr ""
+
+msgid "Confirm new password"
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Save Password"
+msgstr ""
+
+msgid "Email changed successfully."
+msgstr ""
+
+msgid "Email change link is invalid or it has expired."
+msgstr ""
+
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr ""
+
+msgid "Welcome %{email}"
+msgstr ""
+
+msgid "Confirming..."
+msgstr ""
+
+msgid "Confirm and stay logged in"
+msgstr ""
+
+msgid "Confirm and log in only this time"
+msgstr ""
+
+msgid "Logging in..."
+msgstr ""
+
+msgid "Keep me logged in on this device"
+msgstr ""
+
+msgid "Log me in only this time"
+msgstr ""
+
+msgid "Tip: If you prefer passwords, you can enable them in the user settings."
+msgstr ""
+
+msgid "Magic link is invalid or it has expired."
+msgstr ""
+
+msgid "User confirmed successfully."
+msgstr ""
+
+msgid "Welcome back!"
+msgstr ""
+
+msgid "The link is invalid or it has expired."
+msgstr ""
+
+msgid "Invalid email or password"
+msgstr ""
+
+msgid "Password updated successfully!"
+msgstr ""
+
+msgid "Logged out successfully."
+msgstr ""
+
+msgid "You must log in to access this page."
+msgstr ""
+
+msgid "You must re-authenticate to access this page."
+msgstr ""
+
+msgid "The sign-in with Google failed."
+msgstr ""
+
+msgid "Update email instructions"
+msgstr ""
+
+msgid "Log in instructions"
+msgstr ""
+
+msgid "Confirmation instructions"
+msgstr ""
+
+msgid ""
+"Hi %{email},\n"
+"\n"
+"You can change your email by visiting the URL below:\n"
+"\n"
+"%{url}\n"
+"\n"
+"If you didn't request this change, please ignore this.\n"
+msgstr ""
+
+msgid ""
+"Hi %{email},\n"
+"\n"
+"You can log into your account by visiting the URL below:\n"
+"\n"
+"%{url}\n"
+"\n"
+"If you didn't request this email, please ignore this.\n"
+msgstr ""
+
+msgid ""
+"Hi %{email},\n"
+"\n"
+"You can confirm your account by visiting the URL below:\n"
+"\n"
+"%{url}\n"
+"\n"
+"If you didn't create an account with us, please ignore this.\n"
+msgstr ""
