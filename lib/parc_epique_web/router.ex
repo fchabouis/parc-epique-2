@@ -43,6 +43,7 @@ defmodule ParcEpiqueWeb.Router do
 
     live_session :public, on_mount: ParcEpiqueWeb.LiveLocale do
       live "/", MapLive
+      live "/aires/:id", MapLive
     end
   end
 end

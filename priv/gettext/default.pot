@@ -26,3 +26,163 @@ msgstr ""
 
 msgid "Something went wrong!"
 msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "%{distance} on foot"
+msgstr ""
+
+msgid "Directions"
+msgstr ""
+
+msgid "Surroundings"
+msgstr ""
+
+msgid "Equipment"
+msgstr ""
+
+msgid "No rating yet, be the first to write a review!"
+msgstr ""
+
+msgid "%{name}, on %{date}"
+msgstr ""
+
+msgid "Anonymous"
+msgstr ""
+
+msgid "Write a review"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "This playground has no description yet. Your turn!"
+msgstr ""
+
+msgid "Free"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
+msgid "Open at night"
+msgstr ""
+
+msgid "Closed at night"
+msgstr ""
+
+msgid "Private"
+msgstr ""
+
+msgid "Public"
+msgstr ""
+
+msgid "Suggest a change"
+msgstr ""
+
+msgid "Photos"
+msgstr ""
+
+msgid "Enlarge the photo"
+msgstr ""
+
+msgid "Add a photo"
+msgstr ""
+
+msgid "Report that this playground no longer exists"
+msgstr ""
+
+msgid "Coming soon"
+msgstr ""
+
+msgid "Not rated"
+msgstr ""
+
+msgid "%{rating} out of 5"
+msgstr ""
+
+msgid "%{month} %{day}, %{year}"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
+msgstr ""
+
+msgid "Slide"
+msgstr ""
+
+msgid "Spring rider"
+msgstr ""
+
+msgid "Climbing frame"
+msgstr ""
+
+msgid "Rope bridge"
+msgstr ""
+
+msgid "Drinking fountain"
+msgstr ""
+
+msgid "Toilets"
+msgstr ""
+
+msgid "Sandpit"
+msgstr ""
+
+msgid "Table tennis"
+msgstr ""
+
+msgid "Football pitch"
+msgstr ""
+
+msgid "Basketball court"
+msgstr ""
+
+msgid "Pétanque court"
+msgstr ""
+
+msgid "Playhouse"
+msgstr ""
+
+msgid "Car track"
+msgstr ""
+
+msgid "Roundabout"
+msgstr ""
+
+msgctxt "decimal separator"
+msgid "."
+msgstr ""

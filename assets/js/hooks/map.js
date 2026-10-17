@@ -1,6 +1,7 @@
 import maplibregl from "../../vendor/maplibre-gl/maplibre-gl.js"
 
 const DEFAULT_VIEW = {lat: 48.85, lng: 2.34, zoom: 13}
+const FOCUS_ZOOM = 17
 const VIEW_KEY = "parc-epique:view"
 
 const COLOR = "#b6c4bd"
@@ -23,11 +24,14 @@ const savedView = () => {
 
 // Map of playgrounds (MapLibre GL): sends the visible bounds to the LiveView
 // ("bounds") and draws the playgrounds it pushes back ("playgrounds") as a
-// clustered GeoJSON source.
+// clustered GeoJSON source. A click on a playground opens its sheet ("open");
+// when a playground opens, "focus" brings it into view.
 export const MapHook = {
   mounted() {
     const saved = savedView()
-    const view = saved || DEFAULT_VIEW
+    const focus = {lat: parseFloat(this.el.dataset.focusLat), lng: parseFloat(this.el.dataset.focusLng)}
+    const focused = Number.isFinite(focus.lat) && Number.isFinite(focus.lng)
+    const view = focused ? {...focus, zoom: FOCUS_ZOOM} : saved || DEFAULT_VIEW
 
     this.features = new Map()
     this.map = new maplibregl.Map({
@@ -54,8 +58,18 @@ export const MapHook = {
       this.addPlaygroundLayers()
       this.handleEvent("playgrounds", ({playgrounds}) => this.draw(playgrounds))
       this.pushBounds()
-      if (!saved) this.geolocate.trigger()
+      if (!saved && !focused) this.geolocate.trigger()
     })
+
+    this.handleEvent("focus", ({lat, lng}) => {
+      if (!this.map.getBounds().contains([lng, lat])) {
+        this.map.jumpTo({center: [lng, lat], zoom: Math.max(this.map.getZoom(), FOCUS_ZOOM)})
+      }
+    })
+
+    // The sheet takes room from the map on wide screens.
+    this.resizeObserver = new ResizeObserver(() => this.map.resize())
+    this.resizeObserver.observe(this.el)
 
     this.map.on("moveend", () => {
       const center = this.map.getCenter()
@@ -65,6 +79,7 @@ export const MapHook = {
   },
 
   destroyed() {
+    if (this.resizeObserver) this.resizeObserver.disconnect()
     if (this.map) this.map.remove()
   },
 
@@ -120,6 +135,11 @@ export const MapHook = {
       map.easeTo({center: cluster.geometry.coordinates, zoom})
     })
 
+    map.on("click", "playgrounds", (e) => {
+      const [playground] = e.features
+      this.pushEvent("open", {id: playground.properties.id})
+    })
+
     for (const layer of ["clusters", "playgrounds"]) {
       map.on("mouseenter", layer, () => { map.getCanvas().style.cursor = "pointer" })
       map.on("mouseleave", layer, () => { map.getCanvas().style.cursor = "" })
@@ -151,5 +171,33 @@ export const MapHook = {
     if (added) {
       this.map.getSource("playgrounds").setData({type: "FeatureCollection", features: [...this.features.values()]})
     }
+  },
+}
+
+// Walking distance from the visitor to a playground, shown only when the
+// visitor already allowed geolocation (the map's locate button asks for it).
+export const DistanceHook = {
+  mounted() {
+    if (!navigator.geolocation || !navigator.permissions) return
+
+    navigator.permissions.query({name: "geolocation"}).then(({state}) => {
+      if (state !== "granted") return
+      navigator.geolocation.getCurrentPosition(
+        ({coords}) => this.show(coords),
+        () => {},
+        {maximumAge: 60000, timeout: 10000},
+      )
+    }).catch(() => {})
+  },
+
+  show({latitude, longitude}) {
+    const target = new maplibregl.LngLat(parseFloat(this.el.dataset.lng), parseFloat(this.el.dataset.lat))
+    const meters = new maplibregl.LngLat(longitude, latitude).distanceTo(target)
+    const lang = document.documentElement.lang || undefined
+    const distance = meters < 1000
+      ? `${Math.round(meters).toLocaleString(lang)} m`
+      : `${(meters / 1000).toLocaleString(lang, {maximumFractionDigits: 1})} km`
+    this.el.textContent = this.el.dataset.template.replace("%{distance}", distance)
+    this.el.hidden = false
   },
 }
