@@ -3,8 +3,17 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
 
-msgid "Playgrounds across France, rated and photographed by their visitors."
-msgstr "Les aires de jeux de France, notées et photographiées par leurs visiteurs."
+msgid "Playground map"
+msgstr "Carte des aires de jeux"
+
+msgid "Show my position"
+msgstr "Afficher ma position"
+
+msgid "Zoom in to see all the playgrounds"
+msgstr "Zoomez pour voir toutes les aires de jeux"
+
+msgid "Playground"
+msgstr "Aire de jeux"
 
 msgid "close"
 msgstr "fermer"

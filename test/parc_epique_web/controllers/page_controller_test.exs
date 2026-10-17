@@ -8,9 +8,7 @@ defmodule ParcEpiqueWeb.PageControllerTest do
 
   test "GET /fr", %{conn: conn} do
     conn = get(conn, ~p"/fr")
-    html = html_response(conn, 200)
-    assert html =~ "Parc Épique"
-    assert html =~ "Les aires de jeux de France"
+    assert html_response(conn, 200) =~ "Parc Épique"
   end
 
   test "GET with an unknown locale is a 404", %{conn: conn} do

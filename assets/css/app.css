@@ -2,6 +2,9 @@
    https://tailwindcss.com/docs/configuration */
 
 @import "tailwindcss" source(none);
+@import "../vendor/leaflet/leaflet.css";
+@import "../vendor/leaflet.markercluster/MarkerCluster.css";
+@import "../vendor/leaflet.markercluster/MarkerCluster.Default.css";
 @import "phoenix-colocated/parc_epique/colocated.css";
 @source "../css";
 @source "../js";
@@ -103,3 +106,25 @@
 [data-phx-session], [data-phx-teleported-src] { display: contents }
 
 /* This file is for your main application CSS */
+
+/* Playground markers on the map */
+.pe-marker {
+  border-radius: 9999px;
+  background: #b6c4bd;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+.pe-marker--reviewed {
+  background: #1bd980;
+}
+
+.pe-locate {
+  width: 34px;
+  height: 34px;
+  background: white;
+  color: #333;
+  font-size: 20px;
+  line-height: 30px;
+  cursor: pointer;
+}

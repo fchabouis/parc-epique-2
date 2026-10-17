@@ -31,11 +31,13 @@ defmodule ParcEpiqueWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://phoenix.hexdocs.pm/scopes.html)"
 
+  attr :wide, :boolean, default: false, doc: "full-width content without padding, for the map"
+
   slot :inner_block, required: true
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar h-16 px-4 sm:px-6 lg:px-8">
       <div class="flex-1">
         <a href="/" class="text-lg font-semibold">Parc Épique</a>
       </div>
@@ -44,7 +46,11 @@ defmodule ParcEpiqueWeb.Layouts do
       </div>
     </header>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
+    <main :if={@wide}>
+      {render_slot(@inner_block)}
+    </main>
+
+    <main :if={!@wide} class="px-4 py-20 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl space-y-4">
         {render_slot(@inner_block)}
       </div>
