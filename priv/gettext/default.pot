@@ -1,0 +1,19 @@
+## This is a PO Template file.
+
+msgid "Playgrounds across France, rated and photographed by their visitors."
+msgstr ""
+
+msgid "close"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "We can't find the internet"
+msgstr ""
+
+msgid "Attempting to reconnect"
+msgstr ""
+
+msgid "Something went wrong!"
+msgstr ""
