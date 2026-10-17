@@ -525,3 +525,105 @@ msgstr ""
 
 msgid "Review"
 msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "Children don't spend much time outdoors"
+msgstr ""
+
+msgid "Have you heard of the \"Dirt is good\" campaign?"
+msgstr ""
+
+msgid "A survey of 12,000 people in 10 countries shows that the time children spend outdoors is ridiculously low. A third of the children in the United Kingdom spend less than 30 minutes a day outside. On average, a child spends less time outdoors than a prisoner."
+msgstr ""
+
+msgid "It is true that the playground around the corner, as a parent, is a drag sometimes..."
+msgstr ""
+
+msgid "So..."
+msgstr ""
+
+msgid "This site lists the playgrounds, to push us parents to go out more often. And why not, to change playground from time to time."
+msgstr ""
+
+msgid "With your help"
+msgstr ""
+
+msgid "Parc Épique is collaborative."
+msgstr ""
+
+msgid "The first list of playgrounds comes from OpenStreetMap, an open and collaborative mapping project. You can complete it by listing the equipment of a playground, giving your opinion on it and adding photos."
+msgstr ""
+
+msgid "The site is not commercial. It is meant to later help town halls hear about broken equipment and suggestions. By taking part you help everyone!"
+msgstr ""
+
+msgid "The data"
+msgstr ""
+
+msgid "The map shows data © OpenStreetMap contributors. The playground database, derived from OpenStreetMap, is shared under the Open Database Licence (ODbL): you may copy, use and adapt it, provided that you credit OpenStreetMap and Parc Épique and share what you build from it under the same licence."
+msgstr ""
+
+msgid "OpenStreetMap copyright"
+msgstr ""
+
+msgid "Text of the ODbL"
+msgstr ""
+
+msgid "The export holds the position, the name, the validated details and the average ratings of each playground. It holds nothing about the people who contributed."
+msgstr ""
+
+msgid "Download the playgrounds (GeoJSON)"
+msgstr ""
+
+msgid "Updated on %{date}"
+msgstr ""
+
+msgid "The export is generated every night. Come back tomorrow!"
+msgstr ""
+
+msgid "FAQ"
+msgstr ""
+
+msgid "How can I take part?"
+msgstr ""
+
+msgid "You can take part without an account, or create one in a few seconds to find your contributions again from any device."
+msgstr ""
+
+msgid "Can I add a playground?"
+msgstr ""
+
+msgid "If a playground is missing from the map, right-click on the map (on a computer) or press and hold (on a phone or tablet)."
+msgstr ""
+
+msgid "Who made this?"
+msgstr ""
+
+msgid "Francis Chabouis. I am a freelance engineer and developer in Paris with a soft spot for maps."
+msgstr ""
+
+msgid "Can I have the technical details? I would like to do the same with bakeries..."
+msgstr ""
+
+msgid "The code of the project is free. I also wrote a technical article about the first version."
+msgstr ""
+
+msgid "Source code on GitHub"
+msgstr ""
+
+msgid "Technical article on Medium"
+msgstr ""
+
+msgid "A contact?"
+msgstr ""
+
+msgid "To reach me, use the Parc Épique Facebook page"
+msgstr ""
+
+msgid "Playgrounds: © OpenStreetMap contributors (ODbL)"
+msgstr ""
+
+msgid "Data © OpenStreetMap contributors (ODbL)"
+msgstr ""

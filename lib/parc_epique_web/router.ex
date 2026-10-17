@@ -70,6 +70,11 @@ defmodule ParcEpiqueWeb.Router do
     delete("/users/log-out", UserSessionController, :delete)
   end
 
+  # The public export of the database (ODbL), without session or locale
+  scope "/", ParcEpiqueWeb do
+    get "/export/aires.geojson", ExportController, :geojson
+  end
+
   # Sign-in with Google (Ueberauth)
   scope "/auth", ParcEpiqueWeb do
     pipe_through [:browser]
@@ -81,6 +86,8 @@ defmodule ParcEpiqueWeb.Router do
   # Last, as "/:locale" would match any other first segment.
   scope "/:locale", ParcEpiqueWeb do
     pipe_through [:browser, :locale]
+
+    get "/a-propos", PageController, :about
 
     live_session :public,
       on_mount: [ParcEpiqueWeb.LiveLocale, {ParcEpiqueWeb.UserAuth, :mount_current_scope}] do

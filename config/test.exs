@@ -31,7 +31,7 @@ config :parc_epique, ParcEpiqueWeb.Endpoint,
 config :parc_epique, ParcEpique.Storage, root: Path.expand("../tmp/test_uploads", __DIR__)
 
 # Run Oban jobs explicitly in tests
-config :parc_epique, Oban, testing: :manual
+config :parc_epique, Oban, testing: :manual, queues: false, plugins: false
 
 # In test we don't send emails
 config :parc_epique, ParcEpique.Mailer, adapter: Swoosh.Adapters.Test

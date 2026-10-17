@@ -549,3 +549,105 @@ msgstr "Signalement"
 
 msgid "Review"
 msgstr "Avis"
+
+msgid "About"
+msgstr "À propos"
+
+msgid "Children don't spend much time outdoors"
+msgstr "Les enfants ne sont pas beaucoup dehors"
+
+msgid "Have you heard of the \"Dirt is good\" campaign?"
+msgstr "Avez-vous entendu parler de la campagne « Dirt is good » ?"
+
+msgid "A survey of 12,000 people in 10 countries shows that the time children spend outdoors is ridiculously low. A third of the children in the United Kingdom spend less than 30 minutes a day outside. On average, a child spends less time outdoors than a prisoner."
+msgstr "Une enquête menée auprès de 12 000 personnes dans 10 pays nous apprend que le temps passé par les enfants dehors est ridiculement bas. Un tiers des enfants au Royaume-Uni passent moins de 30 minutes par jour dehors. En moyenne, un enfant passerait moins de temps dehors qu'un prisonnier."
+
+msgid "It is true that the playground around the corner, as a parent, is a drag sometimes..."
+msgstr "C'est vrai que l'aire de jeux du coin de la rue, en tant que parent, elle nous gonfle parfois..."
+
+msgid "So..."
+msgstr "Du coup..."
+
+msgid "This site lists the playgrounds, to push us parents to go out more often. And why not, to change playground from time to time."
+msgstr "Ce site référence les aires de jeux, pour nous pousser, nous les parents, à sortir plus souvent. Et pourquoi pas, à changer d'aire de temps en temps."
+
+msgid "With your help"
+msgstr "Avec votre aide"
+
+msgid "Parc Épique is collaborative."
+msgstr "Parc Épique est collaboratif."
+
+msgid "The first list of playgrounds comes from OpenStreetMap, an open and collaborative mapping project. You can complete it by listing the equipment of a playground, giving your opinion on it and adding photos."
+msgstr "La liste initiale des aires vient d'OpenStreetMap, un projet de cartographie ouvert et collaboratif. Vous pouvez la compléter en renseignant les équipements d'une aire, en donnant votre avis et en ajoutant des photos."
+
+msgid "The site is not commercial. It is meant to later help town halls hear about broken equipment and suggestions. By taking part you help everyone!"
+msgstr "Le site n'a pas de vocation commerciale. Il est prévu d'en faire bénéficier les mairies, pour leur signaler un équipement défectueux ou leur faire parvenir vos suggestions. En participant, vous aidez tout le monde !"
+
+msgid "The data"
+msgstr "Les données"
+
+msgid "The map shows data © OpenStreetMap contributors. The playground database, derived from OpenStreetMap, is shared under the Open Database Licence (ODbL): you may copy, use and adapt it, provided that you credit OpenStreetMap and Parc Épique and share what you build from it under the same licence."
+msgstr "La carte affiche des données © contributeurs d'OpenStreetMap. La base des aires, dérivée d'OpenStreetMap, est partagée sous licence ODbL (Open Database Licence) : vous pouvez la copier, l'utiliser et l'adapter, à condition de citer OpenStreetMap et Parc Épique et de partager ce que vous en tirez sous la même licence."
+
+msgid "OpenStreetMap copyright"
+msgstr "Droit d'auteur d'OpenStreetMap"
+
+msgid "Text of the ODbL"
+msgstr "Texte de la licence ODbL"
+
+msgid "The export holds the position, the name, the validated details and the average ratings of each playground. It holds nothing about the people who contributed."
+msgstr "L'export contient la position, le nom, les détails validés et les notes moyennes de chaque aire. Il ne contient rien sur les personnes qui ont contribué."
+
+msgid "Download the playgrounds (GeoJSON)"
+msgstr "Télécharger les aires (GeoJSON)"
+
+msgid "Updated on %{date}"
+msgstr "Mis à jour le %{date}"
+
+msgid "The export is generated every night. Come back tomorrow!"
+msgstr "L'export est généré chaque nuit. Revenez demain !"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "How can I take part?"
+msgstr "Comment puis-je participer ?"
+
+msgid "You can take part without an account, or create one in a few seconds to find your contributions again from any device."
+msgstr "Vous pouvez participer sans compte, ou en créer un en quelques secondes pour retrouver vos contributions depuis n'importe quel appareil."
+
+msgid "Can I add a playground?"
+msgstr "Est-il possible d'ajouter une aire ?"
+
+msgid "If a playground is missing from the map, right-click on the map (on a computer) or press and hold (on a phone or tablet)."
+msgstr "Si une aire n'existe pas sur la carte, faites un clic droit sur la carte (sur ordinateur) ou un appui long (sur mobile et tablette)."
+
+msgid "Who made this?"
+msgstr "Qui a fait ça ?"
+
+msgid "Francis Chabouis. I am a freelance engineer and developer in Paris with a soft spot for maps."
+msgstr "Francis Chabouis. Je suis ingénieur et développeur freelance à Paris, avec un petit faible pour les cartes."
+
+msgid "Can I have the technical details? I would like to do the same with bakeries..."
+msgstr "Je peux avoir des détails techniques ? Car j'aimerais faire la même chose avec les boulangeries..."
+
+msgid "The code of the project is free. I also wrote a technical article about the first version."
+msgstr "Le code du projet est libre. J'ai également écrit un article technique sur la première version."
+
+msgid "Source code on GitHub"
+msgstr "Code source sur GitHub"
+
+msgid "Technical article on Medium"
+msgstr "Article technique sur Medium"
+
+msgid "A contact?"
+msgstr "Un contact ?"
+
+msgid "To reach me, use the Parc Épique Facebook page"
+msgstr "Pour me contacter, utilisez la page Facebook de Parc Épique"
+
+msgid "Playgrounds: © OpenStreetMap contributors (ODbL)"
+msgstr "Aires : © contributeurs d'OpenStreetMap (ODbL)"
+
+msgid "Data © OpenStreetMap contributors (ODbL)"
+msgstr "Données © contributeurs d'OpenStreetMap (ODbL)"
