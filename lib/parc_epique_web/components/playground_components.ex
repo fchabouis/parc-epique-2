@@ -186,8 +186,7 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
       assign(assigns,
         ratings: @rating_values,
         selected: to_rating(assigns.field.value),
-        errors:
-          if(Phoenix.Component.used_input?(assigns.field), do: assigns.field.errors, else: [])
+        errors: if(shown_errors?(assigns.field), do: assigns.field.errors, else: [])
       )
 
     ~H"""
@@ -211,6 +210,13 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
       <p :for={msg <- Enum.map(@errors, &translate_error/1)} class="text-sm text-error">{msg}</p>
     </fieldset>
     """
+  end
+
+  # Radio buttons send nothing when none is checked, which used_input?/1 reads
+  # as an untouched field: show the errors once the form was submitted too.
+  defp shown_errors?(%Phoenix.HTML.FormField{form: form} = field) do
+    Phoenix.Component.used_input?(field) or
+      match?(%Ecto.Changeset{action: action} when action in [:insert, :update], form.source)
   end
 
   defp to_rating(value) when is_number(value), do: value * 1.0
