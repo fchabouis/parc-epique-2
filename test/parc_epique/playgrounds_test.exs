@@ -63,4 +63,35 @@ defmodule ParcEpique.PlaygroundsTest do
 
     assert_raise Ecto.NoResultsError, fn -> Playgrounds.get_visible_playground!(hidden.id) end
   end
+
+  test "saves one review per user and playground, with their display name" do
+    playground = insert_playground(50.61, 3.01)
+    user = ParcEpique.AccountsFixtures.user_fixture(%{display_name: "Camille"})
+
+    assert {:ok, review} =
+             Playgrounds.save_review(playground, user, %{
+               "rating_surroundings" => "3.5",
+               "rating_equipment" => "4",
+               "comment" => "  Bien  "
+             })
+
+    assert %{rating_surroundings: 3.5, rating_equipment: 4.0, comment: "Bien"} = review
+    assert review.display_name == "Camille"
+
+    assert {:ok, updated} =
+             Playgrounds.save_review(playground, user, %{
+               "rating_surroundings" => "5",
+               "rating_equipment" => "5"
+             })
+
+    assert updated.id == review.id
+
+    other = ParcEpique.AccountsFixtures.user_fixture()
+
+    assert {:error, changeset} =
+             Playgrounds.save_review(playground, other, %{"rating_equipment" => "4.2"})
+
+    assert "must be a half point" in errors_on(changeset).rating_equipment
+    assert "can't be blank" in errors_on(changeset).rating_surroundings
+  end
 end

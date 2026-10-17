@@ -43,6 +43,23 @@ defmodule ParcEpique.Playgrounds.Review do
     |> unique_constraint([:playground_id, :user_id])
   end
 
+  @doc """
+  A changeset for a review posted from the site: both ratings are required,
+  the comment is optional.
+  """
+  def form_changeset(review, attrs) do
+    review
+    |> cast(attrs, [:rating_surroundings, :rating_equipment, :comment])
+    |> update_change(:comment, &(&1 && String.trim(&1)))
+    |> validate_required([:rating_surroundings, :rating_equipment])
+    |> validate_number(:rating_surroundings, greater_than: 0)
+    |> validate_number(:rating_equipment, greater_than: 0)
+    |> validate_rating(:rating_surroundings)
+    |> validate_rating(:rating_equipment)
+    |> validate_length(:comment, max: 5000)
+    |> unique_constraint([:playground_id, :user_id])
+  end
+
   defp validate_rating(changeset, field) do
     changeset
     |> validate_number(field, greater_than_or_equal_to: 0, less_than_or_equal_to: 5)

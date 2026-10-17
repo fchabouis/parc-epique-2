@@ -88,4 +88,35 @@ defmodule ParcEpique.Playgrounds do
       ratings -> Enum.sum(ratings) / length(ratings)
     end
   end
+
+  @doc """
+  Gets `user`'s review of the playground, if any.
+  """
+  def get_review(playground_id, user_id) do
+    Repo.get_by(Review, playground_id: playground_id, user_id: user_id)
+  end
+
+  @doc """
+  Returns a changeset for the review form; `review` is the user's existing
+  review or a new one.
+  """
+  def change_review(%Review{} = review, attrs \\ %{}) do
+    Review.form_changeset(review, attrs)
+  end
+
+  @doc """
+  Saves `user`'s review of the playground: there is one review per user and
+  playground, so posting again updates it. The review keeps the user's
+  display name of the moment.
+  """
+  def save_review(%Playground{} = playground, %ParcEpique.Accounts.User{} = user, attrs) do
+    review =
+      get_review(playground.id, user.id) ||
+        %Review{playground_id: playground.id, user_id: user.id}
+
+    review
+    |> Review.form_changeset(attrs)
+    |> Ecto.Changeset.put_change(:display_name, user.display_name)
+    |> Repo.insert_or_update()
+  end
 end

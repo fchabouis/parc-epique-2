@@ -10,6 +10,8 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
   attr :playground, :map, required: true
   attr :ratings, :map, required: true
   attr :close, :string, required: true, doc: "where the close button leads"
+  attr :review_form, :any, default: nil, doc: "the review form, when open"
+  attr :register_prompt, :boolean, default: false, doc: "invite a guest to sign up"
 
   def playground_sheet(assigns) do
     assigns = assign(assigns, :detail, List.first(assigns.playground.details))
@@ -79,7 +81,45 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
           </li>
         </ul>
 
-        <.coming_soon label={gettext("Write a review")} />
+        <div :if={@register_prompt} id="register-prompt" role="status" class="alert alert-info">
+          <span>{gettext("How about registering so that your contributions bear your name?")}</span>
+          <.link href={~p"/users/register"} class="btn btn-sm">{gettext("Sign up")}</.link>
+        </div>
+
+        <.form
+          :if={@review_form}
+          for={@review_form}
+          id="review-form"
+          phx-change="validate_review"
+          phx-submit="save_review"
+          class="space-y-2"
+        >
+          <.rating_input field={@review_form[:rating_surroundings]} label={gettext("Surroundings")} />
+          <.rating_input field={@review_form[:rating_equipment]} label={gettext("Equipment")} />
+          <.input
+            field={@review_form[:comment]}
+            type="textarea"
+            label={gettext("Comment (optional)")}
+          />
+          <div class="flex gap-2">
+            <.button variant="primary" phx-disable-with={gettext("Publishing...")}>
+              {gettext("Publish")}
+            </.button>
+            <button type="button" class="btn btn-ghost" phx-click="cancel_review">
+              {gettext("Cancel")}
+            </button>
+          </div>
+        </.form>
+
+        <button
+          :if={!@review_form}
+          type="button"
+          id="write-review"
+          class="btn btn-primary btn-soft btn-sm"
+          phx-click="new_review"
+        >
+          {gettext("Write a review")}
+        </button>
       </section>
 
       <section class="space-y-2 border-t border-base-300 pt-4">
@@ -136,7 +176,55 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
     """
   end
 
-  # The contribution forms come with issues #9 to #12.
+  @rating_values Enum.map(1..10, &(&1 / 2))
+
+  attr :field, Phoenix.HTML.FormField, required: true
+  attr :label, :string, required: true
+
+  defp rating_input(assigns) do
+    assigns =
+      assign(assigns,
+        ratings: @rating_values,
+        selected: to_rating(assigns.field.value),
+        errors:
+          if(Phoenix.Component.used_input?(assigns.field), do: assigns.field.errors, else: [])
+      )
+
+    ~H"""
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">{@label}</legend>
+      <div class="rating rating-lg rating-half">
+        <input
+          :for={rating <- @ratings}
+          type="radio"
+          id={"#{@field.id}_#{trunc(rating * 2)}"}
+          name={@field.name}
+          value={rating}
+          checked={rating == @selected}
+          aria-label={rating_label(rating)}
+          class={[
+            "mask mask-star-2 bg-warning",
+            if(rating == trunc(rating), do: "mask-half-2", else: "mask-half-1")
+          ]}
+        />
+      </div>
+      <p :for={msg <- Enum.map(@errors, &translate_error/1)} class="text-sm text-error">{msg}</p>
+    </fieldset>
+    """
+  end
+
+  defp to_rating(value) when is_number(value), do: value * 1.0
+
+  defp to_rating(value) when is_binary(value) do
+    case Float.parse(value) do
+      {rating, _} -> rating
+      :error -> nil
+    end
+  end
+
+  defp to_rating(_value), do: nil
+
+  # The other contribution forms come with issues #10 to #12.
   attr :label, :string, required: true
 
   defp coming_soon(assigns) do
