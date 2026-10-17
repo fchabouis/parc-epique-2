@@ -18,6 +18,9 @@
     },
     "node-unknown": {
       "-Lxxxxx": {"equipements": ["toboggan"], "gratuit": true}
+    },
+    "way-26541913": {
+      "-Lyyyyy": {"equipements": ["toboggan"], "gratuit": "false", "ouvertNuit": "true", "prive": "undefined"}
     }
   },
   "comments": {

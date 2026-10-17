@@ -120,9 +120,9 @@ defmodule ParcEpique.Legacy.FirebaseImport do
                 playground_id: playground_id,
                 legacy_key: push_id,
                 equipment: equipment,
-                free: info["gratuit"],
-                open_at_night: info["ouvertNuit"],
-                private: info["prive"],
+                free: to_boolean(info["gratuit"]),
+                open_at_night: to_boolean(info["ouvertNuit"]),
+                private: to_boolean(info["prive"]),
                 # The old site displayed every entry without moderation.
                 status: "validated",
                 legacy_author_uid: info["uid"],
@@ -299,6 +299,12 @@ defmodule ParcEpique.Legacy.FirebaseImport do
   end
 
   defp from_timestamp(_), do: nil
+
+  # Some entries store booleans as strings ("true" / "false").
+  defp to_boolean(value) when is_boolean(value), do: value
+  defp to_boolean("true"), do: true
+  defp to_boolean("false"), do: false
+  defp to_boolean(_), do: nil
 
   defp to_float(n) when is_number(n), do: n * 1.0
   defp to_float(_), do: nil

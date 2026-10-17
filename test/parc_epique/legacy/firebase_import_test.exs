@@ -10,7 +10,7 @@ defmodule ParcEpique.Legacy.FirebaseImportTest do
     assert {:ok, report} = FirebaseImport.run(@fixture)
 
     assert report.playgrounds == %{imported: 3, skipped: ["aire-broken"]}
-    assert report.details == %{imported: 1, orphans: 1, unknown_equipment: ["trampoline"]}
+    assert report.details == %{imported: 2, orphans: 1, unknown_equipment: ["trampoline"]}
     assert report.reviews == %{imported: 2, orphans: 0}
     assert report.photos == %{imported: 1, orphans: 0}
     assert report.removal_reports == %{imported: 1, orphans: 0}
@@ -39,6 +39,10 @@ defmodule ParcEpique.Legacy.FirebaseImportTest do
            } = detail
 
     assert detail.playground_id == added.id
+
+    # Booleans stored as strings in Firebase
+    assert %{free: false, open_at_night: true, private: nil} =
+             Repo.get_by!(Detail, legacy_key: "-Lyyyyy")
 
     review = Repo.get_by!(Review, legacy_author_uid: "uid-a")
 
