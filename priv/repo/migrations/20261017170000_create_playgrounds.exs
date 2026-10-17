@@ -51,8 +51,8 @@ defmodule ParcEpique.Repo.Migrations.CreatePlaygrounds do
 
     create table(:photos) do
       add :playground_id, references(:playgrounds, on_delete: :delete_all), null: false
-      add :path, :string, null: false
-      add :thumbnail_path, :string
+      add :path, :text, null: false
+      add :thumbnail_path, :text
       add :verified, :boolean, null: false, default: false
       add :legacy_key, :string
       add :legacy_author_uid, :string
