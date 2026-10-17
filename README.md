@@ -22,3 +22,4 @@ Tests : `mix test`. Avant de pousser : `mix precommit`.
 - Les géométries utilisent PostGIS via `geo_postgis` (`ParcEpique.PostgrexTypes`).
 - Les tâches de fond (miniatures, imports) passent par Oban.
 - L'export des données Firebase est décrit dans `docs/firebase-export.md`.
+- Le déploiement sur un VPS (Docker, Caddy, sauvegardes) est décrit dans `docs/deploiement.md`.
