@@ -49,6 +49,8 @@ jobs:
 
       - run: mix compile --warnings-as-errors
       - run: mix format --check-formatted
+      - name: Build assets
+        run: mix do assets.setup + assets.build
       - name: mix test
         run: mix test 2>&1 | tee test-output.txt; exit ${PIPESTATUS[0]}
 

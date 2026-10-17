@@ -4,8 +4,4 @@ defmodule ParcEpiqueWeb.PageController do
   def redirect_to_locale(conn, _params) do
     redirect(conn, to: ~p"/#{ParcEpiqueWeb.Plugs.Locale.default_locale()}")
   end
-
-  def home(conn, _params) do
-    render(conn, :home)
-  end
 end

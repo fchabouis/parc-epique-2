@@ -1,6 +1,15 @@
 ## This is a PO Template file.
 
-msgid "Playgrounds across France, rated and photographed by their visitors."
+msgid "Playground map"
+msgstr ""
+
+msgid "Show my position"
+msgstr ""
+
+msgid "Zoom in to see all the playgrounds"
+msgstr ""
+
+msgid "Playground"
 msgstr ""
 
 msgid "close"

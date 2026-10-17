@@ -41,6 +41,8 @@ defmodule ParcEpiqueWeb.Router do
   scope "/:locale", ParcEpiqueWeb do
     pipe_through [:browser, :locale]
 
-    get "/", PageController, :home
+    live_session :public, on_mount: ParcEpiqueWeb.LiveLocale do
+      live "/", MapLive
+    end
   end
 end

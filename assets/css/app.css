@@ -2,6 +2,7 @@
    https://tailwindcss.com/docs/configuration */
 
 @import "tailwindcss" source(none);
+@import "../vendor/maplibre-gl/maplibre-gl.css";
 @import "phoenix-colocated/parc_epique/colocated.css";
 @source "../css";
 @source "../js";
