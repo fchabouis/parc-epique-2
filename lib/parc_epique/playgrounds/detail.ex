@@ -22,6 +22,8 @@ defmodule ParcEpique.Playgrounds.Detail do
 
     belongs_to :playground, Playground
 
+    belongs_to :user, ParcEpique.Accounts.User
+
     timestamps(type: :utc_datetime)
   end
 
@@ -35,7 +37,8 @@ defmodule ParcEpique.Playgrounds.Detail do
       :private,
       :status,
       :legacy_key,
-      :legacy_author_uid
+      :legacy_author_uid,
+      :user_id
     ])
     |> validate_required([:playground_id, :status])
     |> validate_subset(:equipment, Equipment.codes())

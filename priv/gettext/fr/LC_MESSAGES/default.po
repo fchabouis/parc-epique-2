@@ -189,3 +189,207 @@ msgstr "Tourniquet"
 msgctxt "decimal separator"
 msgid "."
 msgstr ","
+
+msgid "Log in"
+msgstr "Se connecter"
+
+msgid "Log out"
+msgstr "Se déconnecter"
+
+msgid "You need to reauthenticate to perform sensitive actions on your account."
+msgstr "Reconnectez-vous pour modifier les réglages de votre compte."
+
+msgid "Don't have an account?"
+msgstr "Pas encore de compte ?"
+
+msgid "Sign up"
+msgstr "Créer un compte"
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Log in with email"
+msgstr "Recevoir un lien de connexion par e-mail"
+
+msgid "Log in with Google"
+msgstr "Se connecter avec Google"
+
+msgid "or"
+msgstr "ou"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Log in and stay logged in"
+msgstr "Se connecter et rester connecté"
+
+msgid "Log in only this time"
+msgstr "Se connecter juste cette fois"
+
+msgid "If your email is in our system, you will receive instructions for logging in shortly."
+msgstr "Si votre adresse est enregistrée, vous allez recevoir un e-mail pour vous connecter."
+
+msgid "Register for an account"
+msgstr "Créer un compte"
+
+msgid "Already registered?"
+msgstr "Déjà inscrit ?"
+
+msgid "Name shown on your contributions (optional)"
+msgstr "Nom affiché sur vos contributions (facultatif)"
+
+msgid "Creating account..."
+msgstr "Création du compte…"
+
+msgid "Create an account"
+msgstr "Créer mon compte"
+
+msgid "An email was sent to %{email}, please access it to confirm your account."
+msgstr "Un e-mail a été envoyé à %{email} : ouvrez-le pour confirmer votre compte."
+
+msgid "Account Settings"
+msgstr "Mon compte"
+
+msgid "Manage your account email address and password settings"
+msgstr "Modifiez votre adresse e-mail et votre mot de passe"
+
+msgid "Changing..."
+msgstr "Modification…"
+
+msgid "Change Email"
+msgstr "Changer d'adresse e-mail"
+
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "Confirm new password"
+msgstr "Confirmez le nouveau mot de passe"
+
+msgid "Saving..."
+msgstr "Enregistrement…"
+
+msgid "Save Password"
+msgstr "Enregistrer le mot de passe"
+
+msgid "Email changed successfully."
+msgstr "Adresse e-mail modifiée."
+
+msgid "Email change link is invalid or it has expired."
+msgstr "Le lien de changement d'adresse est invalide ou a expiré."
+
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr "Un lien pour confirmer le changement d'adresse a été envoyé à la nouvelle adresse."
+
+msgid "Welcome %{email}"
+msgstr "Bienvenue %{email}"
+
+msgid "Confirming..."
+msgstr "Confirmation…"
+
+msgid "Confirm and stay logged in"
+msgstr "Confirmer et rester connecté"
+
+msgid "Confirm and log in only this time"
+msgstr "Confirmer et me connecter juste cette fois"
+
+msgid "Logging in..."
+msgstr "Connexion…"
+
+msgid "Keep me logged in on this device"
+msgstr "Rester connecté sur cet appareil"
+
+msgid "Log me in only this time"
+msgstr "Me connecter juste cette fois"
+
+msgid "Tip: If you prefer passwords, you can enable them in the user settings."
+msgstr "Astuce : si vous préférez un mot de passe, vous pouvez en choisir un dans les réglages de votre compte."
+
+msgid "Magic link is invalid or it has expired."
+msgstr "Le lien de connexion est invalide ou a expiré."
+
+msgid "User confirmed successfully."
+msgstr "Compte confirmé."
+
+msgid "Welcome back!"
+msgstr "Bon retour parmi nous !"
+
+msgid "The link is invalid or it has expired."
+msgstr "Le lien est invalide ou a expiré."
+
+msgid "Invalid email or password"
+msgstr "E-mail ou mot de passe incorrect"
+
+msgid "Password updated successfully!"
+msgstr "Mot de passe modifié !"
+
+msgid "Logged out successfully."
+msgstr "Vous êtes déconnecté."
+
+msgid "You must log in to access this page."
+msgstr "Connectez-vous pour accéder à cette page."
+
+msgid "You must re-authenticate to access this page."
+msgstr "Reconnectez-vous pour accéder à cette page."
+
+msgid "The sign-in with Google failed."
+msgstr "La connexion avec Google a échoué."
+
+msgid "Update email instructions"
+msgstr "Changer votre adresse e-mail sur Parc Épique"
+
+msgid "Log in instructions"
+msgstr "Votre lien de connexion à Parc Épique"
+
+msgid "Confirmation instructions"
+msgstr "Confirmez votre compte Parc Épique"
+
+msgid ""
+"Hi %{email},\n"
+"\n"
+"You can change your email by visiting the URL below:\n"
+"\n"
+"%{url}\n"
+"\n"
+"If you didn't request this change, please ignore this.\n"
+msgstr ""
+"Bonjour %{email},\n"
+"\n"
+"Pour changer votre adresse e-mail, ouvrez le lien ci-dessous :\n"
+"\n"
+"%{url}\n"
+"\n"
+"Si vous n'avez pas demandé ce changement, ignorez ce message.\n"
+
+msgid ""
+"Hi %{email},\n"
+"\n"
+"You can log into your account by visiting the URL below:\n"
+"\n"
+"%{url}\n"
+"\n"
+"If you didn't request this email, please ignore this.\n"
+msgstr ""
+"Bonjour %{email},\n"
+"\n"
+"Pour vous connecter à votre compte, ouvrez le lien ci-dessous :\n"
+"\n"
+"%{url}\n"
+"\n"
+"Si vous n'avez pas demandé cet e-mail, ignorez ce message.\n"
+
+msgid ""
+"Hi %{email},\n"
+"\n"
+"You can confirm your account by visiting the URL below:\n"
+"\n"
+"%{url}\n"
+"\n"
+"If you didn't create an account with us, please ignore this.\n"
+msgstr ""
+"Bonjour %{email},\n"
+"\n"
+"Pour confirmer votre compte, ouvrez le lien ci-dessous :\n"
+"\n"
+"%{url}\n"
+"\n"
+"Si vous n'avez pas créé de compte sur Parc Épique, ignorez ce message.\n"

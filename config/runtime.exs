@@ -23,6 +23,15 @@ end
 config :parc_epique, ParcEpiqueWeb.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
+# Sign-in with Google is offered only when an OAuth client is configured
+# (https://console.cloud.google.com/apis/credentials, redirect URI
+# https://<host>/auth/google/callback).
+if config_env() != :test do
+  config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+    client_id: System.get_env("GOOGLE_CLIENT_ID"),
+    client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+end
+
 if config_env() == :dev do
   # Reload browser tabs when matching files change.
   config :parc_epique, ParcEpiqueWeb.Endpoint,

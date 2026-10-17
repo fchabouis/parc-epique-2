@@ -7,6 +7,19 @@
 # General application configuration
 import Config
 
+config :parc_epique, :scopes,
+  user: [
+    default: true,
+    module: ParcEpique.Accounts.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :id,
+    schema_table: :users,
+    test_data_fixture: ParcEpique.AccountsFixtures,
+    test_setup_helper: :register_and_log_in_user
+  ]
+
 config :parc_epique,
   ecto_repos: [ParcEpique.Repo],
   generators: [timestamp_type: :utc_datetime]
@@ -15,6 +28,11 @@ config :parc_epique,
 config :parc_epique, ParcEpique.Repo, types: ParcEpique.PostgrexTypes
 
 # Background jobs (thumbnails, imports)
+# Sign-in with Google; the OAuth client is configured in runtime.exs.
+config :ueberauth, Ueberauth,
+  base_path: "/auth",
+  providers: [google: {Ueberauth.Strategy.Google, [default_scope: "email"]}]
+
 # MapLibre style of the map's vector tiles.
 config :parc_epique, :map_style_url, "https://tuiles.enliberte.fr/styles/bright.json"
 

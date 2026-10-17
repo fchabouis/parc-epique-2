@@ -92,3 +92,12 @@ msgid "should be at most %{count} byte(s)"
 msgid_plural "should be at most %{count} byte(s)"
 msgstr[0] "doit faire au plus %{count} octet"
 msgstr[1] "doit faire au plus %{count} octets"
+
+msgid "must have the @ sign and no spaces"
+msgstr "doit contenir un @ et aucune espace"
+
+msgid "did not change"
+msgstr "n'a pas changé"
+
+msgid "does not match password"
+msgstr "ne correspond pas au mot de passe"

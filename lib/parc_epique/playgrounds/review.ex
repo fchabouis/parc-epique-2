@@ -17,6 +17,8 @@ defmodule ParcEpique.Playgrounds.Review do
 
     belongs_to :playground, Playground
 
+    belongs_to :user, ParcEpique.Accounts.User
+
     timestamps(type: :utc_datetime)
   end
 
@@ -28,14 +30,17 @@ defmodule ParcEpique.Playgrounds.Review do
       :rating_equipment,
       :comment,
       :display_name,
-      :legacy_author_uid
+      :legacy_author_uid,
+      :user_id
     ])
     |> validate_required([:playground_id])
     |> validate_rating(:rating_surroundings)
     |> validate_rating(:rating_equipment)
     |> validate_length(:comment, max: 5000)
     |> assoc_constraint(:playground)
+    |> assoc_constraint(:user)
     |> unique_constraint([:playground_id, :legacy_author_uid])
+    |> unique_constraint([:playground_id, :user_id])
   end
 
   defp validate_rating(changeset, field) do

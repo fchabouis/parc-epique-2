@@ -40,6 +40,7 @@ defmodule ParcEpique.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.8.15"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
@@ -47,6 +48,8 @@ defmodule ParcEpique.MixProject do
       {:geo_postgis, "~> 3.7"},
       {:oban, "~> 2.19"},
       {:image, "~> 0.72"},
+      {:ueberauth, "~> 0.10"},
+      {:ueberauth_google, "~> 0.12"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.2.0"},

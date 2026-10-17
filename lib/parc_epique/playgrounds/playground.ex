@@ -29,6 +29,8 @@ defmodule ParcEpique.Playgrounds.Playground do
     has_many :photos, Photo
     has_many :removal_reports, RemovalReport
 
+    belongs_to :user, ParcEpique.Accounts.User
+
     timestamps(type: :utc_datetime)
   end
 
@@ -42,7 +44,8 @@ defmodule ParcEpique.Playgrounds.Playground do
       :name,
       :source,
       :status,
-      :legacy_author_uid
+      :legacy_author_uid,
+      :user_id
     ])
     |> validate_required([:location, :source, :status])
     |> validate_inclusion(:osm_type, @osm_types)
