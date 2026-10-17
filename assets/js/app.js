@@ -82,3 +82,9 @@ if (process.env.NODE_ENV === "development") {
   })
 }
 
+// Service worker of the installable app: caches static files, shows a page when offline
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(error => console.warn("Service worker:", error))
+  })
+}
