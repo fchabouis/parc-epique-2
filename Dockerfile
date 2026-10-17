@@ -17,8 +17,10 @@ ENV MIX_ENV=prod
 
 RUN mix local.hex --force && mix local.rebar --force
 
-# Dependencies first, so that they stay cached when only the code changes
-COPY mix.exs mix.lock ./
+# Dependencies first, so that they stay cached when only the code changes.
+# mix.lock is optional here only until it is committed: commit it, so that
+# the image is built with the versions that were tested.
+COPY mix.exs mix.lock* ./
 RUN mix deps.get --only prod
 RUN mkdir config
 COPY config/config.exs config/prod.exs config/
