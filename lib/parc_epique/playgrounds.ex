@@ -5,7 +5,7 @@ defmodule ParcEpique.Playgrounds do
 
   import Ecto.Query
 
-  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, Review}
+  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, RemovalReport, Review}
   alias ParcEpique.Repo
 
   @doc """

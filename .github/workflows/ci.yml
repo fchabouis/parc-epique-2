@@ -47,8 +47,10 @@ jobs:
           name: mix.lock
           path: mix.lock
 
-      - run: mix compile --warnings-as-errors
-      - run: mix format --check-formatted
+      - name: Compile
+        run: mix compile --warnings-as-errors 2>&1 | tee test-output.txt; exit ${PIPESTATUS[0]}
+      - name: Check formatting
+        run: mix format --check-formatted 2>&1 | tee test-output.txt; exit ${PIPESTATUS[0]}
       - name: Build assets
         run: mix do assets.setup + assets.build
       - name: mix test
@@ -60,8 +62,8 @@ jobs:
           curl -sSfL -o tmp/base_repartage_2022_08_22.json https://raw.githubusercontent.com/fchabouis/parc-epique/master/base_repartage_2022_08_22.json
           mix test --only legacy_export 2>&1 | tee test-output.txt; exit ${PIPESTATUS[0]}
 
-      # Job logs are not always readable; repeat the failing output as an annotation.
-      - name: Report test failures
+      # Job logs are not always readable; repeat the failing output (compile, format or tests) as an annotation.
+      - name: Report failures
         if: failure()
         run: |
           if [ -f test-output.txt ]; then
