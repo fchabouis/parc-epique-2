@@ -101,3 +101,6 @@ msgstr "n'a pas changé"
 
 msgid "does not match password"
 msgstr "ne correspond pas au mot de passe"
+
+msgid "must be a half point"
+msgstr "doit être un multiple de 0,5"

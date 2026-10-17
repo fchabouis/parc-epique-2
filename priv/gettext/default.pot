@@ -369,3 +369,21 @@ msgid ""
 "\n"
 "If you didn't create an account with us, please ignore this.\n"
 msgstr ""
+
+msgid "How about registering so that your contributions bear your name?"
+msgstr ""
+
+msgid "Comment (optional)"
+msgstr ""
+
+msgid "Publishing..."
+msgstr ""
+
+msgid "Publish"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Thank you for your review!"
+msgstr ""

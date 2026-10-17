@@ -11,14 +11,15 @@ defmodule ParcEpiqueWeb.MapLive do
   """
   use ParcEpiqueWeb, :live_view
 
-  alias ParcEpique.Playgrounds
+  alias ParcEpique.{Accounts, Playgrounds}
+  alias ParcEpique.Playgrounds.Review
   alias ParcEpiqueWeb.PlaygroundComponents
 
   @limit 3000
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, truncated: false, photo: nil)}
+    {:ok, assign(socket, truncated: false, photo: nil, review_form: nil, register_prompt: false)}
   end
 
   @impl true
@@ -31,6 +32,8 @@ defmodule ParcEpiqueWeb.MapLive do
        playground: playground,
        ratings: Playgrounds.average_ratings(playground.reviews),
        photo: nil,
+       review_form: nil,
+       register_prompt: false,
        page_title: PlaygroundComponents.playground_name(playground)
      )
      |> push_event("focus", %{
@@ -75,6 +78,8 @@ defmodule ParcEpiqueWeb.MapLive do
             playground={@playground}
             ratings={@ratings}
             close={~p"/#{@locale}"}
+            review_form={@review_form}
+            register_prompt={@register_prompt}
           />
         </aside>
       </div>
@@ -113,6 +118,53 @@ defmodule ParcEpiqueWeb.MapLive do
     {:noreply, assign(socket, photo: nil)}
   end
 
+  def handle_event("new_review", _params, %{assigns: %{playground: %{} = playground}} = socket) do
+    review =
+      case current_contributor(socket) do
+        nil -> nil
+        user -> Playgrounds.get_review(playground.id, user.id)
+      end
+
+    form = review |> Kernel.||(%Review{}) |> Playgrounds.change_review() |> to_form()
+    {:noreply, assign(socket, review_form: form, register_prompt: false)}
+  end
+
+  def handle_event("cancel_review", _params, socket) do
+    {:noreply, assign(socket, review_form: nil)}
+  end
+
+  def handle_event("validate_review", %{"review" => params}, socket) do
+    changeset = %Review{} |> Playgrounds.change_review(params) |> Map.put(:action, :validate)
+    {:noreply, assign(socket, review_form: to_form(changeset))}
+  end
+
+  def handle_event(
+        "save_review",
+        %{"review" => params},
+        %{assigns: %{playground: %{} = p}} = socket
+      ) do
+    {user, guest?} = contributor!(socket)
+
+    case Playgrounds.save_review(p, user, params) do
+      {:ok, _review} ->
+        playground = Playgrounds.get_visible_playground!(p.id)
+
+        {:noreply,
+         socket
+         |> assign(
+           playground: playground,
+           ratings: Playgrounds.average_ratings(playground.reviews),
+           review_form: nil,
+           register_prompt: guest?
+         )
+         |> put_flash(:info, gettext("Thank you for your review!"))
+         |> push_event("reviewed", %{id: playground.id})}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, review_form: to_form(changeset))}
+    end
+  end
+
   defp marker(%{
          id: id,
          name: name,
@@ -135,6 +187,21 @@ defmodule ParcEpiqueWeb.MapLive do
   end
 
   def parse_bounds(_params), do: :error
+
+  # The signed-in user, or the guest of this session if they already contributed.
+  defp current_contributor(%{assigns: %{current_scope: %{user: %{} = user}}}), do: user
+
+  defp current_contributor(%{assigns: %{guest_token: token}}) when is_binary(token),
+    do: Accounts.get_guest_user(token)
+
+  defp current_contributor(_socket), do: nil
+
+  # The signed-in user, or the guest of this session, created if needed;
+  # with whether it is a guest.
+  defp contributor!(%{assigns: %{current_scope: %{user: %{} = user}}}), do: {user, false}
+
+  defp contributor!(%{assigns: %{guest_token: token}}) when is_binary(token),
+    do: {Accounts.get_or_create_guest_user(token), true}
 
   defp parse_id!(id) do
     case Integer.parse(id) do

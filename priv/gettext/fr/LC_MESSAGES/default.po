@@ -393,3 +393,21 @@ msgstr ""
 "%{url}\n"
 "\n"
 "Si vous n'avez pas créé de compte sur Parc Épique, ignorez ce message.\n"
+
+msgid "How about registering so that your contributions bear your name?"
+msgstr "Ça vous dit de vous enregistrer pour que vos contributions portent votre nom ?"
+
+msgid "Comment (optional)"
+msgstr "Commentaire (facultatif)"
+
+msgid "Publishing..."
+msgstr "Publication…"
+
+msgid "Publish"
+msgstr "Publier"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Thank you for your review!"
+msgstr "Merci pour votre avis !"

@@ -65,6 +65,14 @@ export const MapHook = {
       if (!saved && !focused) this.geolocate.trigger()
     })
 
+    this.handleEvent("reviewed", ({id}) => {
+      const feature = this.features.get(id)
+      if (feature && !feature.properties.reviewed) {
+        feature.properties.reviewed = true
+        this.refresh()
+      }
+    })
+
     this.handleEvent("focus", ({lat, lng}) => {
       if (!this.map.getBounds().contains([lng, lat])) {
         this.map.jumpTo({center: [lng, lat], zoom: Math.max(this.map.getZoom(), FOCUS_ZOOM)})
@@ -172,9 +180,12 @@ export const MapHook = {
       })
       added = true
     }
-    if (added) {
-      this.map.getSource("playgrounds").setData({type: "FeatureCollection", features: [...this.features.values()]})
-    }
+    if (added) this.refresh()
+  },
+
+  refresh() {
+    const source = this.map.getSource("playgrounds")
+    if (source) source.setData({type: "FeatureCollection", features: [...this.features.values()]})
   },
 }
 
