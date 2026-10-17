@@ -1,9 +1,17 @@
 defmodule ParcEpique.Accounts.User do
+  @moduledoc """
+  A contributor: either an account (with an email) or a guest, created on the
+  first contribution made without an account and identified by a token kept
+  in the session. Logging in moves a guest's contributions to the account.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "users" do
     field :email, :string
+    field :guest_token, :binary, redact: true
+    field :display_name, :string
+    field :admin, :boolean, default: false
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
@@ -27,6 +35,24 @@ defmodule ParcEpique.Accounts.User do
     user
     |> cast(attrs, [:email])
     |> validate_email(opts)
+  end
+
+  @doc """
+  A user changeset for registering: the email and an optional display name,
+  shown on the user's contributions.
+  """
+  def registration_changeset(user, attrs, opts \\ []) do
+    user
+    |> email_changeset(attrs, opts)
+    |> display_name_changeset(attrs)
+  end
+
+  @doc "A user changeset for changing the display name."
+  def display_name_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:display_name])
+    |> update_change(:display_name, &(&1 && String.trim(&1)))
+    |> validate_length(:display_name, max: 60)
   end
 
   defp validate_email(changeset, opts) do

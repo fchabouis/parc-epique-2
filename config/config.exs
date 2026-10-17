@@ -28,6 +28,11 @@ config :parc_epique,
 config :parc_epique, ParcEpique.Repo, types: ParcEpique.PostgrexTypes
 
 # Background jobs (thumbnails, imports)
+# Sign-in with Google; the OAuth client is configured in runtime.exs.
+config :ueberauth, Ueberauth,
+  base_path: "/auth",
+  providers: [google: {Ueberauth.Strategy.Google, [default_scope: "email"]}]
+
 # MapLibre style of the map's vector tiles.
 config :parc_epique, :map_style_url, "https://tuiles.enliberte.fr/styles/bright.json"
 

@@ -7,6 +7,7 @@ defmodule ParcEpique.Accounts do
   alias ParcEpique.Repo
 
   alias ParcEpique.Accounts.{User, UserToken, UserNotifier}
+  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, RemovalReport, Review}
 
   ## Database getters
 
@@ -76,8 +77,103 @@ defmodule ParcEpique.Accounts do
   """
   def register_user(attrs) do
     %User{}
-    |> User.email_changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for the registration form.
+  """
+  def change_user_registration(user, attrs \\ %{}, opts \\ []) do
+    User.registration_changeset(user, attrs, opts)
+  end
+
+  @doc """
+  Gets the user with this email, or registers it, for a sign-in with an
+  identity provider (Google) that has verified the email. The account is
+  confirmed either way.
+  """
+  def get_or_register_verified_user(email) when is_binary(email) do
+    case get_user_by_email(email) do
+      %User{confirmed_at: nil} = user ->
+        user |> User.confirm_changeset() |> Repo.update()
+
+      %User{} = user ->
+        {:ok, user}
+
+      nil ->
+        %User{}
+        |> User.email_changeset(%{email: email})
+        |> User.confirm_changeset()
+        |> Repo.insert()
+    end
+  end
+
+  ## Guests
+
+  @doc """
+  Generates the random token identifying a guest, kept in the session.
+  """
+  def generate_guest_token, do: :crypto.strong_rand_bytes(32)
+
+  @doc """
+  Gets the guest user for a session's guest token, creating it if needed.
+  Called on the first contribution made without an account.
+  """
+  def get_or_create_guest_user(token) when is_binary(token) do
+    Repo.insert!(%User{guest_token: hash_guest_token(token)},
+      on_conflict: {:replace, [:updated_at]},
+      conflict_target: :guest_token,
+      returning: true
+    )
+  end
+
+  @doc """
+  Gets the guest user for a session's guest token, if it has contributed.
+  """
+  def get_guest_user(token) when is_binary(token) do
+    Repo.get_by(User, guest_token: hash_guest_token(token))
+  end
+
+  defp hash_guest_token(token), do: :crypto.hash(:sha256, token)
+
+  @doc """
+  Moves the contributions of the guest identified by `token` to `user`, then
+  deletes the guest. When both reviewed the same playground, the guest's
+  review is kept, being the most recent.
+  """
+  def merge_guest_user(token, %User{} = user) when is_binary(token) do
+    case get_guest_user(token) do
+      %User{id: guest_id} = guest when guest_id != user.id ->
+        Repo.transact(fn ->
+          guest_reviews =
+            from(r in Review, where: r.user_id == ^guest_id, select: r.playground_id)
+
+          from(r in Review,
+            where: r.user_id == ^user.id and r.playground_id in subquery(guest_reviews)
+          )
+          |> Repo.delete_all()
+
+          for schema <- [Review, Playground, Detail, Photo, RemovalReport] do
+            from(c in schema, where: c.user_id == ^guest_id)
+            |> Repo.update_all(set: [user_id: user.id])
+          end
+
+          Repo.delete(guest)
+        end)
+
+      _ ->
+        {:ok, nil}
+    end
+  end
+
+  ## Administrators
+
+  @doc "Grants or revokes the administrator role."
+  def set_admin(%User{} = user, admin?) when is_boolean(admin?) do
+    user
+    |> Ecto.Changeset.change(admin: admin?)
+    |> Repo.update()
   end
 
   ## Settings

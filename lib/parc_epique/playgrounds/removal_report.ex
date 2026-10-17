@@ -17,12 +17,14 @@ defmodule ParcEpique.Playgrounds.RemovalReport do
 
     belongs_to :playground, Playground
 
+    belongs_to :user, ParcEpique.Accounts.User
+
     timestamps(type: :utc_datetime)
   end
 
   def changeset(report, attrs) do
     report
-    |> cast(attrs, [:playground_id, :reason, :status, :legacy_key, :legacy_author_uid])
+    |> cast(attrs, [:playground_id, :reason, :status, :legacy_key, :legacy_author_uid, :user_id])
     |> validate_required([:playground_id, :status])
     |> validate_inclusion(:status, @statuses)
     |> validate_length(:reason, max: 2000)

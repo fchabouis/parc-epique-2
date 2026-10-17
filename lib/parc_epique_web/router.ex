@@ -11,6 +11,7 @@ defmodule ParcEpiqueWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
+    plug :fetch_guest_token
   end
 
   pipeline :locale do
@@ -41,15 +42,6 @@ defmodule ParcEpiqueWeb.Router do
     end
   end
 
-  scope "/:locale", ParcEpiqueWeb do
-    pipe_through [:browser, :locale]
-
-    live_session :public, on_mount: ParcEpiqueWeb.LiveLocale do
-      live "/", MapLive
-      live "/aires/:id", MapLive
-    end
-  end
-
   ## Authentication routes
 
   scope "/", ParcEpiqueWeb do
@@ -61,7 +53,7 @@ defmodule ParcEpiqueWeb.Router do
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
     end
 
-    post "/users/update-password", UserSessionController, :update_password
+    post("/users/update-password", UserSessionController, :update_password)
   end
 
   scope "/", ParcEpiqueWeb do
@@ -74,7 +66,26 @@ defmodule ParcEpiqueWeb.Router do
       live "/users/log-in/:token", UserLive.Confirmation, :new
     end
 
-    post "/users/log-in", UserSessionController, :create
-    delete "/users/log-out", UserSessionController, :delete
+    post("/users/log-in", UserSessionController, :create)
+    delete("/users/log-out", UserSessionController, :delete)
+  end
+
+  # Sign-in with Google (Ueberauth)
+  scope "/auth", ParcEpiqueWeb do
+    pipe_through [:browser]
+
+    get "/:provider", UserOAuthController, :request
+    get "/:provider/callback", UserOAuthController, :callback
+  end
+
+  # Last, as "/:locale" would match any other first segment.
+  scope "/:locale", ParcEpiqueWeb do
+    pipe_through [:browser, :locale]
+
+    live_session :public,
+      on_mount: [ParcEpiqueWeb.LiveLocale, {ParcEpiqueWeb.UserAuth, :mount_current_scope}] do
+      live "/", MapLive
+      live "/aires/:id", MapLive
+    end
   end
 end

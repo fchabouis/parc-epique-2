@@ -47,7 +47,7 @@ defmodule ParcEpiqueWeb.MapLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} wide>
+    <Layouts.app flash={@flash} current_scope={@current_scope} wide>
       <div class="relative flex h-[calc(100dvh-4rem)]">
         <div
           id="map"

@@ -5,7 +5,12 @@ defmodule ParcEpique.Repo.Migrations.CreateUsersAuthTables do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
     create table(:users) do
-      add :email, :citext, null: false
+      # Guests (contributors without an account) have no email, only the
+      # SHA-256 of the random token kept in their session.
+      add :email, :citext
+      add :guest_token, :binary
+      add :display_name, :string
+      add :admin, :boolean, null: false, default: false
       add :hashed_password, :string
       add :confirmed_at, :naive_datetime
 
@@ -13,6 +18,7 @@ defmodule ParcEpique.Repo.Migrations.CreateUsersAuthTables do
     end
 
     create unique_index(:users, [:email])
+    create unique_index(:users, [:guest_token])
 
     create table(:users_tokens) do
       add :user_id, references(:users, on_delete: :delete_all), null: false

@@ -30,4 +30,8 @@ defmodule ParcEpique.Accounts.Scope do
   end
 
   def for_user(nil), do: nil
+
+  @doc "Whether the scope is an administrator's."
+  def admin?(%__MODULE__{user: %User{admin: true}}), do: true
+  def admin?(_scope), do: false
 end

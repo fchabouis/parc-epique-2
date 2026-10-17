@@ -57,6 +57,15 @@ defmodule ParcEpiqueWeb.UserLive.Login do
           </.button>
         </.form>
 
+        <.link
+          :if={google_enabled?()}
+          href={~p"/auth/google"}
+          id="login_google"
+          class="btn w-full"
+        >
+          Log in with Google
+        </.link>
+
         <div class="divider">or</div>
 
         <.form
@@ -127,6 +136,8 @@ defmodule ParcEpiqueWeb.UserLive.Login do
      |> put_flash(:info, info)
      |> push_navigate(to: ~p"/users/log-in")}
   end
+
+  defp google_enabled?, do: ParcEpiqueWeb.UserOAuthController.google_enabled?()
 
   defp local_mail_adapter? do
     Application.get_env(:parc_epique, ParcEpique.Mailer)[:adapter] == Swoosh.Adapters.Local

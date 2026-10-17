@@ -35,6 +35,10 @@ defmodule ParcEpiqueWeb.UserAuth do
   def log_in_user(conn, user, params \\ %{}) do
     user_return_to = get_session(conn, :user_return_to)
 
+    if guest_token = get_session(conn, :guest_token) do
+      {:ok, _} = Accounts.merge_guest_user(guest_token, user)
+    end
+
     conn
     |> create_or_extend_session(user, params)
     |> delete_session(:user_return_to)
@@ -58,6 +62,19 @@ defmodule ParcEpiqueWeb.UserAuth do
     |> renew_session(nil)
     |> delete_resp_cookie(@remember_me_cookie, @remember_me_options)
     |> redirect(to: ~p"/")
+  end
+
+  @doc """
+  Gives each browser session a guest token, so that contributions made
+  without an account can be attributed (see `ParcEpique.Accounts`) and moved
+  to the account on log in. No user is created until the first contribution.
+  """
+  def fetch_guest_token(conn, _opts) do
+    if get_session(conn, :guest_token) do
+      conn
+    else
+      put_session(conn, :guest_token, Accounts.generate_guest_token())
+    end
   end
 
   @doc """
@@ -246,8 +263,24 @@ defmodule ParcEpiqueWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_admin, params, session, socket) do
+    case on_mount(:require_authenticated, params, session, socket) do
+      {:cont, socket} ->
+        if Scope.admin?(socket.assigns.current_scope) do
+          {:cont, socket}
+        else
+          {:halt, Phoenix.LiveView.redirect(socket, to: ~p"/")}
+        end
+
+      halt ->
+        halt
+    end
+  end
+
   defp mount_current_scope(socket, session) do
-    Phoenix.Component.assign_new(socket, :current_scope, fn ->
+    socket
+    |> Phoenix.Component.assign_new(:guest_token, fn -> session["guest_token"] end)
+    |> Phoenix.Component.assign_new(:current_scope, fn ->
       {user, _} =
         if user_token = session["user_token"] do
           Accounts.get_user_by_session_token(user_token)
@@ -277,6 +310,19 @@ defmodule ParcEpiqueWeb.UserAuth do
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log-in")
       |> halt()
+    end
+  end
+
+  @doc """
+  Plug for routes reserved to administrators.
+  """
+  def require_admin(conn, _opts) do
+    conn = require_authenticated_user(conn, [])
+
+    cond do
+      conn.halted -> conn
+      Scope.admin?(conn.assigns.current_scope) -> conn
+      true -> conn |> redirect(to: ~p"/") |> halt()
     end
   end
 

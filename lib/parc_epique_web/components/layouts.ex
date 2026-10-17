@@ -41,9 +41,19 @@ defmodule ParcEpiqueWeb.Layouts do
       <div class="flex-1">
         <a href="/" class="text-lg font-semibold">Parc Épique</a>
       </div>
-      <div class="flex-none">
+      <nav class="flex flex-none items-center gap-1">
+        <%= if @current_scope do %>
+          <.link href={~p"/users/settings"} class="btn btn-ghost btn-sm">
+            {@current_scope.user.display_name || @current_scope.user.email}
+          </.link>
+          <.link href={~p"/users/log-out"} method="delete" class="btn btn-ghost btn-sm">
+            {gettext("Log out")}
+          </.link>
+        <% else %>
+          <.link href={~p"/users/log-in"} class="btn btn-ghost btn-sm">{gettext("Log in")}</.link>
+        <% end %>
         <.theme_toggle />
-      </div>
+      </nav>
     </header>
 
     <main :if={@wide}>
