@@ -59,4 +59,30 @@ defmodule ParcEpiqueWeb.MapLiveTest do
                "east" => 400
              })
   end
+
+  describe "adding a playground" do
+    test "a guest adds a playground, which is visible and opens its sheet", %{conn: conn} do
+      {:ok, view, html} = live(conn, ~p"/fr")
+      assert html =~ "data-add-labels"
+
+      render_hook(view, "add_playground", %{"lat" => 48.8386, "lng" => 2.3536})
+
+      assert [%Playground{source: "user", status: "visible", user_id: user_id} = playground] =
+               Repo.all(Playground)
+
+      assert %{email: nil} = Repo.get!(ParcEpique.Accounts.User, user_id)
+      assert playground.location.coordinates == {2.3536, 48.8386}
+      assert_patch(view, ~p"/fr/aires/#{playground.id}")
+      assert_push_event(view, "playgrounds", %{playgrounds: [%{id: id, name: "Aire de jeux"}]})
+      assert id == playground.id
+      assert render(view) =~ "L&#39;aire de jeux a été ajoutée"
+    end
+
+    test "rejects coordinates outside the world", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/fr")
+      html = render_hook(view, "add_playground", %{"lat" => 123.0, "lng" => 2.0})
+      assert html =~ "n&#39;a pas pu être ajoutée"
+      assert Repo.all(Playground) == []
+    end
+  end
 end

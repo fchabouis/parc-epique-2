@@ -104,3 +104,11 @@
 [data-phx-session], [data-phx-teleported-src] { display: contents }
 
 /* This file is for your main application CSS */
+
+/* Popup to add a playground on the map */
+.pe-new-playground {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 14rem;
+  color: #1f2937;
+}

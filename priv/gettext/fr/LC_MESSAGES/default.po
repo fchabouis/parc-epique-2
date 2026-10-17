@@ -411,3 +411,21 @@ msgstr "Annuler"
 
 msgid "Thank you for your review!"
 msgstr "Merci pour votre avis !"
+
+msgid "Move the marker to the playground, then save it."
+msgstr "Placez le marqueur sur l'aire de jeux, puis enregistrez-la."
+
+msgid "Add this playground"
+msgstr "Ajouter cette aire de jeux"
+
+msgid "Remove the marker"
+msgstr "Supprimer le marqueur"
+
+msgid "Back to the map"
+msgstr "Revenir à la carte"
+
+msgid "The playground has been added, thank you!"
+msgstr "L'aire de jeux a été ajoutée, merci !"
+
+msgid "The playground could not be added."
+msgstr "L'aire de jeux n'a pas pu être ajoutée."

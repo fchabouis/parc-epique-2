@@ -63,6 +63,7 @@ export const MapHook = {
       this.handleEvent("playgrounds", ({playgrounds}) => this.draw(playgrounds))
       this.pushBounds()
       if (!saved && !focused) this.geolocate.trigger()
+      this.listenForNewPlaygrounds()
     })
 
     this.handleEvent("reviewed", ({id}) => {
@@ -156,6 +157,66 @@ export const MapHook = {
       map.on("mouseenter", layer, () => { map.getCanvas().style.cursor = "pointer" })
       map.on("mouseleave", layer, () => { map.getCanvas().style.cursor = "" })
     }
+  },
+
+  // A right click, or a long press on touch screens, proposes to add a
+  // playground there: a draggable marker with a popup to save it.
+  listenForNewPlaygrounds() {
+    this.map.on("contextmenu", (e) => this.proposePlayground(e.lngLat))
+
+    let pressTimer = null
+    const cancel = () => clearTimeout(pressTimer)
+    this.map.on("touchstart", (e) => {
+      cancel()
+      if (e.originalEvent.touches.length === 1) {
+        pressTimer = setTimeout(() => this.proposePlayground(e.lngLat), 600)
+      }
+    })
+    for (const event of ["touchend", "touchcancel", "movestart", "zoomstart"]) this.map.on(event, cancel)
+  },
+
+  proposePlayground(lngLat) {
+    if (!this.newMarker) {
+      this.newMarker = new maplibregl.Marker({draggable: true, color: "#f59e0b"})
+      this.newMarker.setPopup(new maplibregl.Popup({offset: 30, closeButton: false}).setDOMContent(this.newPlaygroundPopup()))
+      this.newMarker.on("dragstart", () => this.newMarker.getPopup().remove())
+      this.newMarker.on("dragend", () => this.newMarker.togglePopup())
+    }
+    this.newMarker.setLngLat(lngLat).addTo(this.map)
+    if (!this.newMarker.getPopup().isOpen()) this.newMarker.togglePopup()
+  },
+
+  newPlaygroundPopup() {
+    const labels = JSON.parse(this.el.dataset.addLabels)
+    const content = document.createElement("div")
+    content.className = "pe-new-playground"
+
+    const hint = document.createElement("p")
+    hint.textContent = labels.hint
+    content.append(hint)
+
+    const button = (label, className, onClick) => {
+      const element = document.createElement("button")
+      element.type = "button"
+      element.className = className
+      element.textContent = label
+      element.addEventListener("click", onClick)
+      content.append(element)
+    }
+
+    button(labels.save, "btn btn-primary btn-sm w-full", () => {
+      const {lat, lng} = this.newMarker.getLngLat()
+      this.pushEvent("add_playground", {lat, lng})
+      this.removeNewMarker()
+    })
+    button(labels.remove, "btn btn-ghost btn-sm w-full", () => this.removeNewMarker())
+    button(labels.back, "btn btn-ghost btn-sm w-full", () => this.newMarker.getPopup().remove())
+    return content
+  },
+
+  removeNewMarker() {
+    if (this.newMarker) this.newMarker.remove()
+    this.newMarker = null
   },
 
   pushBounds() {
