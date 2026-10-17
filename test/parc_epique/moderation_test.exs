@@ -106,7 +106,12 @@ defmodule ParcEpique.ModerationTest do
   end
 
   test "reviews are deleted", %{playground: p, user: user} do
-    {:ok, review} = Playgrounds.save_review(p, user, %{"comment" => "spam"})
+    {:ok, review} =
+      Playgrounds.save_review(p, user, %{
+        "rating_surroundings" => "4",
+        "rating_equipment" => "3",
+        "comment" => "spam"
+      })
 
     assert [%Review{}] = Moderation.list_recent_reviews()
     assert {:ok, _} = Moderation.delete_review(review.id)
@@ -121,7 +126,13 @@ defmodule ParcEpique.ModerationTest do
   end
 
   test "the feed mixes every kind of contribution, newest first", %{playground: p, user: user} do
-    {:ok, _} = Playgrounds.save_review(p, user, %{"comment" => "nice"})
+    {:ok, _} =
+      Playgrounds.save_review(p, user, %{
+        "rating_surroundings" => "4",
+        "rating_equipment" => "3",
+        "comment" => "nice"
+      })
+
     {:ok, _} = Playgrounds.propose_details(p, user, %{"free" => "true"})
     {:ok, _} = Playgrounds.report_removal(p, user)
     {:ok, added} = Playgrounds.add_playground(user, 48.85, 2.35)

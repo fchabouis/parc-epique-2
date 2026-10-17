@@ -120,7 +120,12 @@ defmodule ParcEpiqueWeb.ModerationLiveTest do
     end
 
     test "an abusive review is deleted", %{conn: conn, playground: p, visitor: visitor} do
-      {:ok, review} = Playgrounds.save_review(p, visitor, %{"comment" => "buy my stuff"})
+      {:ok, review} =
+        Playgrounds.save_review(p, visitor, %{
+          "rating_surroundings" => "4",
+          "rating_equipment" => "3",
+          "comment" => "buy my stuff"
+        })
 
       {:ok, view, html} = live(conn, ~p"/fr/admin/avis")
       assert html =~ "buy my stuff"
@@ -132,7 +137,13 @@ defmodule ParcEpiqueWeb.ModerationLiveTest do
     end
 
     test "the feed lists the latest contributions", %{conn: conn, playground: p, visitor: v} do
-      {:ok, _} = Playgrounds.save_review(p, v, %{"comment" => "nice"})
+      {:ok, _} =
+        Playgrounds.save_review(p, v, %{
+          "rating_surroundings" => "4",
+          "rating_equipment" => "3",
+          "comment" => "nice"
+        })
+
       {:ok, _} = Playgrounds.report_removal(p, v)
 
       {:ok, view, _html} = live(conn, ~p"/fr/admin")
