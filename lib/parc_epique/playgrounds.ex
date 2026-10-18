@@ -119,4 +119,20 @@ defmodule ParcEpique.Playgrounds do
     |> Ecto.Changeset.put_change(:display_name, user.display_name)
     |> Repo.insert_or_update()
   end
+
+  @doc """
+  Adds a playground placed on the map by `user` (a guest or an account). It
+  is visible right away and listed in the moderation, as `source: "user"`.
+  """
+  def add_playground(%ParcEpique.Accounts.User{} = user, lat, lng)
+      when is_number(lat) and is_number(lng) do
+    %Playground{}
+    |> Playground.changeset(%{
+      location: Playground.point(lat * 1.0, lng * 1.0),
+      source: "user",
+      status: "visible",
+      user_id: user.id
+    })
+    |> Repo.insert()
+  end
 end

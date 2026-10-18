@@ -387,3 +387,21 @@ msgstr ""
 
 msgid "Thank you for your review!"
 msgstr ""
+
+msgid "Move the marker to the playground, then save it."
+msgstr ""
+
+msgid "Add this playground"
+msgstr ""
+
+msgid "Remove the marker"
+msgstr ""
+
+msgid "Back to the map"
+msgstr ""
+
+msgid "The playground has been added, thank you!"
+msgstr ""
+
+msgid "The playground could not be added."
+msgstr ""

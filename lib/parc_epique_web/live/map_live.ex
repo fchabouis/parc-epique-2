@@ -58,6 +58,14 @@ defmodule ParcEpiqueWeb.MapLive do
           phx-update="ignore"
           data-style-url={Application.fetch_env!(:parc_epique, :map_style_url)}
           data-locate-label={gettext("Show my position")}
+          data-add-labels={
+            Jason.encode!(%{
+              hint: gettext("Move the marker to the playground, then save it."),
+              save: gettext("Add this playground"),
+              remove: gettext("Remove the marker"),
+              back: gettext("Back to the map")
+            })
+          }
           data-focus-lat={@playground && PlaygroundComponents.lat(@playground)}
           data-focus-lng={@playground && PlaygroundComponents.lng(@playground)}
           class="h-full min-w-0 flex-1"
@@ -101,6 +109,26 @@ defmodule ParcEpiqueWeb.MapLive do
 
       :error ->
         {:noreply, socket}
+    end
+  end
+
+  def handle_event("add_playground", %{"lat" => lat, "lng" => lng}, socket)
+      when is_number(lat) and is_number(lng) do
+    {user, _guest?} = contributor!(socket)
+
+    case Playgrounds.add_playground(user, lat, lng) do
+      {:ok, playground} ->
+        new_marker =
+          marker(%{id: playground.id, name: nil, reviewed: false, location: playground.location})
+
+        {:noreply,
+         socket
+         |> push_event("playgrounds", %{playgrounds: [new_marker]})
+         |> put_flash(:info, gettext("The playground has been added, thank you!"))
+         |> push_patch(to: ~p"/#{socket.assigns.locale}/aires/#{playground.id}")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, gettext("The playground could not be added."))}
     end
   end
 
