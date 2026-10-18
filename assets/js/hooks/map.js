@@ -8,9 +8,43 @@ const DEFAULT_VIEW = {lat: 48.85, lng: 2.34, zoom: 13}
 const FOCUS_ZOOM = 17
 const VIEW_KEY = "parc-epique:view"
 
-const COLOR = "#b6c4bd"
-const REVIEWED_COLOR = "#1bd980"
-const CLUSTER_COLOR = "#0f9d58"
+// The pins of the previous site: a 32px teardrop (a square with three rounded
+// corners, turned 45°) with a 3px border. Green once reviewed, white
+// otherwise, orange while its sheet is open.
+const PINS = {
+  "pin-reviewed": {border: "#ffffff", fill: "#1bd980"},
+  "pin-unreviewed": {border: "#b6c4bd", fill: "#ffffff"},
+  "pin-selected": {border: "#ffffff", fill: "#ffa500"},
+}
+const PIN_SIZE = 32
+const PIN_BORDER = 3
+const PIXEL_RATIO = 2
+
+const teardrop = (ctx, cx, cy, radius) => {
+  const half = radius * Math.SQRT1_2
+  ctx.beginPath()
+  ctx.moveTo(cx, cy + radius * Math.SQRT2)
+  ctx.lineTo(cx + half, cy + half)
+  ctx.arc(cx, cy, radius, Math.PI / 4, (Math.PI * 3) / 4, true)
+  ctx.closePath()
+  ctx.fill()
+}
+
+const drawPin = ({border, fill}) => {
+  const radius = PIN_SIZE / 2
+  const width = PIN_SIZE
+  const height = Math.ceil(radius + radius * Math.SQRT2)
+  const canvas = document.createElement("canvas")
+  canvas.width = width * PIXEL_RATIO
+  canvas.height = height * PIXEL_RATIO
+  const ctx = canvas.getContext("2d")
+  ctx.scale(PIXEL_RATIO, PIXEL_RATIO)
+  ctx.fillStyle = border
+  teardrop(ctx, radius, radius, radius)
+  ctx.fillStyle = fill
+  teardrop(ctx, radius, radius, radius - PIN_BORDER)
+  return ctx.getImageData(0, 0, canvas.width, canvas.height)
+}
 
 const storage = {
   get(key) {
@@ -28,8 +62,9 @@ const savedView = () => {
 
 // Map of playgrounds (MapLibre GL): sends the visible bounds to the LiveView
 // ("bounds") and draws the playgrounds it pushes back ("playgrounds") as a
-// clustered GeoJSON source. A click on a playground opens its sheet ("open");
-// when a playground opens, "focus" brings it into view.
+// GeoJSON source of pins (never clustered). A click on a playground opens its sheet ("open");
+// when a playground opens, "focus" brings it into view and highlights its pin
+// until "unfocus".
 export const MapHook = {
   mounted() {
     const saved = savedView()
@@ -74,7 +109,10 @@ export const MapHook = {
       }
     })
 
-    this.handleEvent("focus", ({lat, lng}) => {
+    this.handleEvent("unfocus", () => this.select(null))
+
+    this.handleEvent("focus", ({id, lat, lng}) => {
+      this.select(id)
       if (!this.map.getBounds().contains([lng, lat])) {
         this.map.jumpTo({center: [lng, lat], zoom: Math.max(this.map.getZoom(), FOCUS_ZOOM)})
       }
@@ -106,54 +144,39 @@ export const MapHook = {
 
   addPlaygroundLayers() {
     const map = this.map
+    for (const [name, colors] of Object.entries(PINS)) {
+      map.addImage(name, drawPin(colors), {pixelRatio: PIXEL_RATIO})
+    }
+
     map.addSource("playgrounds", {
       type: "geojson",
       data: {type: "FeatureCollection", features: []},
-      cluster: true,
-      clusterRadius: 45,
-      clusterMaxZoom: 15,
     })
 
-    map.addLayer({
-      id: "clusters",
-      type: "circle",
-      source: "playgrounds",
-      filter: ["has", "point_count"],
-      paint: {
-        "circle-color": CLUSTER_COLOR,
-        "circle-opacity": 0.85,
-        "circle-stroke-color": "#ffffff",
-        "circle-stroke-width": 2,
-        "circle-radius": ["step", ["get", "point_count"], 14, 10, 18, 100, 24],
-      },
-    })
+    const pinLayout = {
+      "icon-anchor": "bottom",
+      "icon-allow-overlap": true,
+      "icon-ignore-placement": true,
+    }
 
-    map.addLayer({
-      id: "cluster-count",
-      type: "symbol",
-      source: "playgrounds",
-      filter: ["has", "point_count"],
-      layout: {"text-field": ["get", "point_count_abbreviated"], "text-size": 12},
-      paint: {"text-color": "#ffffff"},
-    })
-
+    // Reviewed pins are drawn over the others, as on the previous site.
     map.addLayer({
       id: "playgrounds",
-      type: "circle",
+      type: "symbol",
       source: "playgrounds",
-      filter: ["!", ["has", "point_count"]],
-      paint: {
-        "circle-color": ["case", ["get", "reviewed"], REVIEWED_COLOR, COLOR],
-        "circle-radius": ["case", ["get", "reviewed"], 9, 6],
-        "circle-stroke-color": "#ffffff",
-        "circle-stroke-width": 2,
+      layout: {
+        ...pinLayout,
+        "icon-image": ["case", ["get", "reviewed"], "pin-reviewed", "pin-unreviewed"],
+        "symbol-sort-key": ["case", ["get", "reviewed"], 1, 0],
       },
     })
 
-    map.on("click", "clusters", async (e) => {
-      const [cluster] = map.queryRenderedFeatures(e.point, {layers: ["clusters"]})
-      const zoom = await map.getSource("playgrounds").getClusterExpansionZoom(cluster.properties.cluster_id)
-      map.easeTo({center: cluster.geometry.coordinates, zoom})
+    map.addLayer({
+      id: "playground-selected",
+      type: "symbol",
+      source: "playgrounds",
+      filter: this.selectedFilter(),
+      layout: {...pinLayout, "icon-image": "pin-selected"},
     })
 
     map.on("click", "playgrounds", (e) => {
@@ -161,9 +184,18 @@ export const MapHook = {
       this.pushEvent("open", {id: playground.properties.id})
     })
 
-    for (const layer of ["clusters", "playgrounds"]) {
-      map.on("mouseenter", layer, () => { map.getCanvas().style.cursor = "pointer" })
-      map.on("mouseleave", layer, () => { map.getCanvas().style.cursor = "" })
+    map.on("mouseenter", "playgrounds", () => { map.getCanvas().style.cursor = "pointer" })
+    map.on("mouseleave", "playgrounds", () => { map.getCanvas().style.cursor = "" })
+  },
+
+  selectedFilter() {
+    return ["==", ["get", "id"], this.selectedId ?? -1]
+  },
+
+  select(id) {
+    this.selectedId = id
+    if (this.map.getLayer("playground-selected")) {
+      this.map.setFilter("playground-selected", this.selectedFilter())
     }
   },
 
