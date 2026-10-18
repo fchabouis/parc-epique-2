@@ -87,5 +87,15 @@ defmodule ParcEpiqueWeb.Router do
       live "/", MapLive
       live "/aires/:id", MapLive
     end
+
+    live_session :admin,
+      on_mount: [ParcEpiqueWeb.LiveLocale, {ParcEpiqueWeb.UserAuth, :require_admin}] do
+      live "/admin", AdminLive.Moderation, :feed
+      live "/admin/aires", AdminLive.Moderation, :playgrounds
+      live "/admin/details", AdminLive.Moderation, :details
+      live "/admin/photos", AdminLive.Moderation, :photos
+      live "/admin/signalements", AdminLive.Moderation, :reports
+      live "/admin/avis", AdminLive.Moderation, :reviews
+    end
   end
 end

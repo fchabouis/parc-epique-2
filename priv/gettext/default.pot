@@ -450,3 +450,78 @@ msgstr ""
 
 msgid "The photo could not be sent."
 msgstr ""
+
+msgid "Moderation"
+msgstr ""
+
+msgid "Nothing here."
+msgstr ""
+
+msgid "by %{author}, %{date}"
+msgstr ""
+
+msgid "Keep"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Hide this playground from the map?"
+msgstr ""
+
+msgid "Validate"
+msgstr ""
+
+msgid "Reject"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete this photo for good?"
+msgstr ""
+
+msgid "Delete this review for good?"
+msgstr ""
+
+msgid "is reported as no longer existing"
+msgstr ""
+
+msgid "Hide the playground"
+msgstr ""
+
+msgid "Dismiss the report"
+msgstr ""
+
+msgid "Surroundings: %{surroundings}, equipment: %{equipment}"
+msgstr ""
+
+msgid "Playground #%{id}"
+msgstr ""
+
+msgid "a visitor"
+msgstr ""
+
+msgid "Latest"
+msgstr ""
+
+msgid "New playgrounds"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Reviews"
+msgstr ""
+
+msgid "New playground"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid "Report"
+msgstr ""
+
+msgid "Review"
+msgstr ""

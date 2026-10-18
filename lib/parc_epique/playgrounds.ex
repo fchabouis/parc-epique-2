@@ -131,6 +131,7 @@ defmodule ParcEpique.Playgrounds do
       location: Playground.point(lat * 1.0, lng * 1.0),
       source: "user",
       status: "visible",
+      checked: false,
       user_id: user.id
     })
     |> Repo.insert()

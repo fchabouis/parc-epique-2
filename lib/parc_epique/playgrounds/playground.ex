@@ -22,6 +22,7 @@ defmodule ParcEpique.Playgrounds.Playground do
     field :name, :string
     field :source, :string, default: "osm"
     field :status, :string, default: "visible"
+    field :checked, :boolean, default: true
     field :legacy_author_uid, :string
 
     has_many :details, Detail
@@ -44,6 +45,7 @@ defmodule ParcEpique.Playgrounds.Playground do
       :name,
       :source,
       :status,
+      :checked,
       :legacy_author_uid,
       :user_id
     ])
