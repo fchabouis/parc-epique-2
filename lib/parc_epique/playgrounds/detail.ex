@@ -27,6 +27,29 @@ defmodule ParcEpique.Playgrounds.Detail do
     timestamps(type: :utc_datetime)
   end
 
+  @doc """
+  A changeset for details proposed from the site: at least one piece of
+  information is required. They stay pending until an administrator
+  validates them.
+  """
+  def form_changeset(detail, attrs) do
+    detail
+    |> cast(attrs, [:equipment, :free, :open_at_night, :private])
+    |> update_change(:equipment, fn equipment -> Enum.reject(equipment, &(&1 == "")) end)
+    |> validate_subset(:equipment, Equipment.codes())
+    |> validate_described()
+  end
+
+  defp validate_described(changeset) do
+    described? =
+      get_field(changeset, :equipment) != [] or
+        Enum.any?([:free, :open_at_night, :private], &(not is_nil(get_field(changeset, &1))))
+
+    if described?,
+      do: changeset,
+      else: add_error(changeset, :equipment, "tell us at least one thing")
+  end
+
   def changeset(detail, attrs) do
     detail
     |> cast(attrs, [

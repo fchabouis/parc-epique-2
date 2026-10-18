@@ -12,6 +12,9 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
   attr :close, :string, required: true, doc: "where the close button leads"
   attr :review_form, :any, default: nil, doc: "the review form, when open"
   attr :register_prompt, :boolean, default: false, doc: "invite a guest to sign up"
+  attr :detail_form, :any, default: nil, doc: "the details form, when open"
+  attr :confirm_report, :boolean, default: false, doc: "ask to confirm the removal report"
+  attr :upload, :any, required: true, doc: "the photo upload (Phoenix.LiveView.UploadConfig)"
 
   def playground_sheet(assigns) do
     assigns = assign(assigns, :detail, List.first(assigns.playground.details))
@@ -143,7 +146,83 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
             </li>
           </ul>
         </div>
-        <.coming_soon label={gettext("Suggest a change")} />
+        <.form
+          :if={@detail_form}
+          for={@detail_form}
+          id="detail-form"
+          phx-change="validate_detail"
+          phx-submit="save_detail"
+          class="space-y-3"
+        >
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">{gettext("Equipment")}</legend>
+            <input type="hidden" name={@detail_form[:equipment].name <> "[]"} value="" />
+            <label :for={code <- ParcEpique.Playgrounds.Equipment.codes()} class="label gap-2">
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                name={@detail_form[:equipment].name <> "[]"}
+                value={code}
+                checked={code in (Phoenix.HTML.Form.input_value(@detail_form, :equipment) || [])}
+              />
+              {equipment_label(code)}
+            </label>
+            <p
+              :for={msg <- field_errors(@detail_form[:equipment])}
+              class="text-sm text-error"
+            >
+              {msg}
+            </p>
+          </fieldset>
+          <.input
+            field={@detail_form[:free]}
+            type="select"
+            label={gettext("Price")}
+            options={[
+              {gettext("I don't know"), ""},
+              {gettext("Free"), "true"},
+              {gettext("Paid"), "false"}
+            ]}
+          />
+          <.input
+            field={@detail_form[:open_at_night]}
+            type="select"
+            label={gettext("At night")}
+            options={[
+              {gettext("I don't know"), ""},
+              {gettext("Open at night"), "true"},
+              {gettext("Closed at night"), "false"}
+            ]}
+          />
+          <.input
+            field={@detail_form[:private]}
+            type="select"
+            label={gettext("Access")}
+            options={[
+              {gettext("I don't know"), ""},
+              {gettext("Private"), "true"},
+              {gettext("Public"), "false"}
+            ]}
+          />
+          <div class="flex gap-2">
+            <.button variant="primary" phx-disable-with={gettext("Sending...")}>
+              {gettext("Send")}
+            </.button>
+            <button type="button" class="btn btn-ghost" phx-click="cancel_detail">
+              {gettext("Cancel")}
+            </button>
+          </div>
+        </.form>
+
+        <button
+          :if={!@detail_form}
+          type="button"
+          id="suggest-details"
+          class="btn btn-ghost btn-sm"
+          phx-click="new_detail"
+        >
+          {gettext("Suggest a change")}
+        </button>
       </section>
 
       <section class="space-y-2 border-t border-base-300 pt-4">
@@ -166,14 +245,66 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
             </button>
           </li>
         </ul>
-        <.coming_soon label={gettext("Add a photo")} />
+        <form id="photo-form" phx-change="validate_photo" class="space-y-2">
+          <label class="btn btn-ghost btn-sm">
+            <.icon name="hero-camera" class="size-4" /> {gettext("Add a photo")}
+            <.live_file_input upload={@upload} class="sr-only" capture="environment" />
+          </label>
+          <div :for={entry <- @upload.entries} id={"upload-#{entry.ref}"} class="space-y-1">
+            <progress class="progress progress-primary w-full" value={entry.progress} max="100">
+              {entry.progress}%
+            </progress>
+            <p :for={err <- upload_errors(@upload, entry)} class="text-sm text-error">
+              {upload_error_message(err)}
+            </p>
+            <button
+              type="button"
+              class="btn btn-ghost btn-xs"
+              phx-click="cancel_photo"
+              phx-value-ref={entry.ref}
+            >
+              {gettext("Cancel")}
+            </button>
+          </div>
+          <p :for={err <- upload_errors(@upload)} class="text-sm text-error">
+            {upload_error_message(err)}
+          </p>
+        </form>
       </section>
 
       <section class="border-t border-base-300 pt-4">
-        <.coming_soon label={gettext("Report that this playground no longer exists")} />
+        <div :if={@confirm_report} id="report-confirmation" class="alert alert-warning">
+          <span>{gettext("Are you sure this playground no longer exists?")}</span>
+          <button type="button" class="btn btn-sm" phx-click="report_removal">
+            {gettext("Yes, it no longer exists")}
+          </button>
+          <button type="button" class="btn btn-sm btn-ghost" phx-click="cancel_report">
+            {gettext("Cancel")}
+          </button>
+        </div>
+        <button
+          :if={!@confirm_report}
+          type="button"
+          id="report-removal"
+          class="btn btn-ghost btn-sm"
+          phx-click="confirm_report"
+        >
+          {gettext("Report that this playground no longer exists")}
+        </button>
       </section>
     </article>
     """
+  end
+
+  defp upload_error_message(:too_large), do: gettext("This photo is too large (15 MB at most).")
+  defp upload_error_message(:not_accepted), do: gettext("This file is not a supported image.")
+  defp upload_error_message(:too_many_files), do: gettext("Send one photo at a time.")
+  defp upload_error_message(_error), do: gettext("The photo could not be sent.")
+
+  defp field_errors(field) do
+    if Phoenix.Component.used_input?(field) or field.form.source.action in [:insert, :validate],
+      do: Enum.map(field.errors, &translate_error/1),
+      else: []
   end
 
   @rating_values Enum.map(1..10, &(&1 / 2))
@@ -229,17 +360,6 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
   end
 
   defp to_rating(_value), do: nil
-
-  # The other contribution forms come with issues #10 to #12.
-  attr :label, :string, required: true
-
-  defp coming_soon(assigns) do
-    ~H"""
-    <button type="button" class="btn btn-ghost btn-sm" disabled title={gettext("Coming soon")}>
-      {@label}
-    </button>
-    """
-  end
 
   attr :photo, :map, required: true
 

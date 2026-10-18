@@ -405,3 +405,48 @@ msgstr ""
 
 msgid "The playground could not be added."
 msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "At night"
+msgstr ""
+
+msgid "Access"
+msgstr ""
+
+msgid "I don't know"
+msgstr ""
+
+msgid "Sending..."
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Thank you! Your suggestion will be shown once it has been checked."
+msgstr ""
+
+msgid "Are you sure this playground no longer exists?"
+msgstr ""
+
+msgid "Yes, it no longer exists"
+msgstr ""
+
+msgid "Thank you, your report will be checked."
+msgstr ""
+
+msgid "Thank you for your photo!"
+msgstr ""
+
+msgid "This file is not a supported image."
+msgstr ""
+
+msgid "This photo is too large (15 MB at most)."
+msgstr ""
+
+msgid "Send one photo at a time."
+msgstr ""
+
+msgid "The photo could not be sent."
+msgstr ""

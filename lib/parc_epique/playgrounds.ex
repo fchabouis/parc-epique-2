@@ -5,7 +5,7 @@ defmodule ParcEpique.Playgrounds do
 
   import Ecto.Query
 
-  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, Review}
+  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, RemovalReport, Review}
   alias ParcEpique.Repo
 
   @doc """
@@ -134,5 +134,70 @@ defmodule ParcEpique.Playgrounds do
       user_id: user.id
     })
     |> Repo.insert()
+  end
+
+  @doc """
+  Returns a changeset for the details form.
+  """
+  def change_detail(%Detail{} = detail, attrs \\ %{}), do: Detail.form_changeset(detail, attrs)
+
+  @doc """
+  Records details proposed by `user` for a playground. They are pending
+  until an administrator validates them.
+  """
+  def propose_details(%Playground{} = playground, %ParcEpique.Accounts.User{} = user, attrs) do
+    %Detail{playground_id: playground.id, user_id: user.id, status: "pending"}
+    |> Detail.form_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Records `user`'s report that a playground no longer exists, for the
+  moderation. A user's second report of the same playground is ignored.
+  """
+  def report_removal(
+        %Playground{} = playground,
+        %ParcEpique.Accounts.User{} = user,
+        reason \\ nil
+      ) do
+    case Repo.get_by(RemovalReport,
+           playground_id: playground.id,
+           user_id: user.id,
+           status: "pending"
+         ) do
+      nil ->
+        %RemovalReport{playground_id: playground.id, user_id: user.id}
+        |> RemovalReport.changeset(%{reason: reason})
+        |> Repo.insert()
+
+      report ->
+        {:ok, report}
+    end
+  end
+
+  @doc """
+  Stores an uploaded image file as a photo of the playground and queues its
+  thumbnail. The photo is unverified until an administrator checks it and is
+  shown meanwhile, as on the old site.
+
+  Returns `{:error, :unsupported}` when the file is not an image.
+  """
+  def add_photo(%Playground{} = playground, %ParcEpique.Accounts.User{} = user, source_path) do
+    case ParcEpique.Media.extension(source_path) do
+      nil ->
+        {:error, :unsupported}
+
+      extension ->
+        key = "photos/#{playground.id}/#{Ecto.UUID.generate()}#{extension}"
+
+        with :ok <- ParcEpique.Storage.put_file(source_path, key),
+             {:ok, photo} <-
+               %Photo{playground_id: playground.id, user_id: user.id, path: key, verified: false}
+               |> Photo.changeset(%{})
+               |> Repo.insert(),
+             {:ok, _job} <- ParcEpique.Workers.GenerateThumbnail.enqueue(photo) do
+          {:ok, photo}
+        end
+    end
   end
 end
