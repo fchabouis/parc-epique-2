@@ -78,6 +78,8 @@ defmodule ParcEpiqueWeb.MapLive do
           phx-update="ignore"
           data-style-url={Application.fetch_env!(:parc_epique, :map_style_url)}
           data-locate-label={gettext("Show my position")}
+          data-attribution-label={gettext("Playgrounds: © OpenStreetMap contributors (ODbL)")}
+          data-attribution-url={~p"/#{@locale}/a-propos#data"}
           data-add-labels={
             Jason.encode!(%{
               hint: gettext("Move the marker to the playground, then save it."),

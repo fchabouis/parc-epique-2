@@ -42,6 +42,12 @@ defmodule ParcEpiqueWeb.Layouts do
         <a href="/" class="text-lg font-semibold">Parc Épique</a>
       </div>
       <nav class="flex flex-none items-center gap-1">
+        <.link
+          href={~p"/#{Gettext.get_locale(ParcEpiqueWeb.Gettext)}/a-propos"}
+          class="btn btn-ghost btn-sm"
+        >
+          {gettext("About")}
+        </.link>
         <%= if @current_scope do %>
           <.link
             :if={ParcEpique.Accounts.Scope.admin?(@current_scope)}

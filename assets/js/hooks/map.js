@@ -43,7 +43,7 @@ export const MapHook = {
       style: this.el.dataset.styleUrl,
       center: [view.lng, view.lat],
       zoom: view.zoom || DEFAULT_VIEW.zoom,
-      attributionControl: {compact: true},
+      attributionControl: {compact: true, customAttribution: this.attribution()},
       locale: {
         "GeolocateControl.FindMyLocation": this.el.dataset.locateLabel,
         "GeolocateControl.LocationNotAvailable": this.el.dataset.locateLabel,
@@ -89,6 +89,14 @@ export const MapHook = {
       storage.set(VIEW_KEY, {lat: center.lat, lng: center.lng, zoom: this.map.getZoom()})
       if (this.map.isStyleLoaded()) this.pushBounds()
     })
+  },
+
+  // The playgrounds come from OpenStreetMap (ODbL): credit it, linking to the About page.
+  attribution() {
+    const link = document.createElement("a")
+    link.href = this.el.dataset.attributionUrl
+    link.textContent = this.el.dataset.attributionLabel
+    return link.outerHTML
   },
 
   destroyed() {

@@ -38,7 +38,12 @@ config :parc_epique, :map_style_url, "https://tuiles.enliberte.fr/styles/bright.
 
 config :parc_epique, Oban,
   repo: ParcEpique.Repo,
-  queues: [default: 10, media: 2, imports: 1]
+  queues: [default: 10, media: 2, imports: 1],
+  plugins: [
+    {Oban.Plugins.Pruner, max_age: 7 * 24 * 3600},
+    # The public export, every night
+    {Oban.Plugins.Cron, crontab: [{"0 3 * * *", ParcEpique.Workers.ExportPlaygrounds}]}
+  ]
 
 # French first; add a locale here and in priv/gettext to translate the site
 config :parc_epique, ParcEpiqueWeb.Gettext,

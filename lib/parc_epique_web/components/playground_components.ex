@@ -277,6 +277,12 @@ defmodule ParcEpiqueWeb.PlaygroundComponents do
           {gettext("Report that this playground no longer exists")}
         </button>
       </section>
+
+      <p class="border-t border-base-300 pt-4 text-xs opacity-70">
+        <.link href={~p"/#{Gettext.get_locale(ParcEpiqueWeb.Gettext)}/a-propos#data"} class="link">
+          {gettext("Data © OpenStreetMap contributors (ODbL)")}
+        </.link>
+      </p>
     </article>
     """
   end
