@@ -18,7 +18,8 @@ defmodule ParcEpiqueWeb do
   """
 
   def static_paths,
-    do: ~w(assets fonts images favicon.ico robots.txt manifest.webmanifest sw.js offline.html)
+    do:
+      ~w(assets fonts images favicon.ico robots.txt manifest.webmanifest sw.js offline.html service-worker.js)
 
   def router do
     quote do

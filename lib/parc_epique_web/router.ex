@@ -26,6 +26,11 @@ defmodule ParcEpiqueWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :redirect_to_locale
+
+    # URLs of the old site, which was also installed as an app with this start page
+    get "/index.html", PageController, :redirect_to_locale
+    get "/apropos", PageController, :legacy_about
+    get "/login", PageController, :legacy_login
   end
 
   # Other scopes may use custom stacks.
