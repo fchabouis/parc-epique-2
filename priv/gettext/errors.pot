@@ -119,3 +119,6 @@ msgstr ""
 
 msgid "must be a half point"
 msgstr ""
+
+msgid "tell us at least one thing"
+msgstr ""

@@ -5,7 +5,7 @@ defmodule ParcEpique.Playgrounds do
 
   import Ecto.Query
 
-  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, Review}
+  alias ParcEpique.Playgrounds.{Detail, Photo, Playground, RemovalReport, Review}
   alias ParcEpique.Repo
 
   @doc """
@@ -134,5 +134,44 @@ defmodule ParcEpique.Playgrounds do
       user_id: user.id
     })
     |> Repo.insert()
+  end
+
+  @doc """
+  Returns a changeset for the details form.
+  """
+  def change_detail(%Detail{} = detail, attrs \\ %{}), do: Detail.form_changeset(detail, attrs)
+
+  @doc """
+  Records details proposed by `user` for a playground. They are pending
+  until an administrator validates them.
+  """
+  def propose_details(%Playground{} = playground, %ParcEpique.Accounts.User{} = user, attrs) do
+    %Detail{playground_id: playground.id, user_id: user.id, status: "pending"}
+    |> Detail.form_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Records `user`'s report that a playground no longer exists, for the
+  moderation. A user's second report of the same playground is ignored.
+  """
+  def report_removal(
+        %Playground{} = playground,
+        %ParcEpique.Accounts.User{} = user,
+        reason \\ nil
+      ) do
+    case Repo.get_by(RemovalReport,
+           playground_id: playground.id,
+           user_id: user.id,
+           status: "pending"
+         ) do
+      nil ->
+        %RemovalReport{playground_id: playground.id, user_id: user.id}
+        |> RemovalReport.changeset(%{reason: reason})
+        |> Repo.insert()
+
+      report ->
+        {:ok, report}
+    end
   end
 end
