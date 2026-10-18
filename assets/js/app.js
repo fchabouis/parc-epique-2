@@ -25,6 +25,9 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/parc_epique"
 import topbar from "../vendor/topbar"
 import {DistanceHook, MapHook} from "./hooks/map"
+import {redirectLegacyUrl} from "./legacy_urls"
+
+redirectLegacyUrl()
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
