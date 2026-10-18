@@ -9,12 +9,12 @@ const FOCUS_ZOOM = 17
 const VIEW_KEY = "parc-epique:view"
 
 // The pins of the previous site: a 32px teardrop (a square with three rounded
-// corners, turned 45°) with a 3px border. Green once reviewed, white
-// otherwise, orange while its sheet is open.
+// corners, turned 45°) with a 3px border and a swing inside. Green once
+// reviewed, white otherwise, orange while its sheet is open.
 const PINS = {
-  "pin-reviewed": {border: "#ffffff", fill: "#1bd980"},
-  "pin-unreviewed": {border: "#b6c4bd", fill: "#ffffff"},
-  "pin-selected": {border: "#ffffff", fill: "#ffa500"},
+  "pin-reviewed": {border: "#ffffff", fill: "#1bd980", glyph: "#ffffff"},
+  "pin-unreviewed": {border: "#b6c4bd", fill: "#ffffff", glyph: "#8fa198"},
+  "pin-selected": {border: "#ffffff", fill: "#ffa500", glyph: "#ffffff"},
 }
 const PIN_SIZE = 32
 const PIN_BORDER = 3
@@ -30,7 +30,36 @@ const teardrop = (ctx, cx, cy, radius) => {
   ctx.fill()
 }
 
-const drawPin = ({border, fill}) => {
+// A swing in the circle of the pin: an A-frame, two ropes and a seat.
+const drawSwing = (ctx, cx, cy, color) => {
+  ctx.strokeStyle = color
+  ctx.lineCap = "round"
+  ctx.lineJoin = "round"
+
+  ctx.lineWidth = 1.8
+  ctx.beginPath()
+  ctx.moveTo(cx - 8, cy + 7)
+  ctx.lineTo(cx - 2.5, cy - 7)
+  ctx.lineTo(cx + 2.5, cy - 7)
+  ctx.lineTo(cx + 8, cy + 7)
+  ctx.stroke()
+
+  ctx.lineWidth = 1.2
+  ctx.beginPath()
+  ctx.moveTo(cx - 3, cy - 6)
+  ctx.lineTo(cx - 3, cy + 2)
+  ctx.moveTo(cx + 3, cy - 6)
+  ctx.lineTo(cx + 3, cy + 2)
+  ctx.stroke()
+
+  ctx.lineWidth = 2.4
+  ctx.beginPath()
+  ctx.moveTo(cx - 4, cy + 3.5)
+  ctx.lineTo(cx + 4, cy + 3.5)
+  ctx.stroke()
+}
+
+const drawPin = ({border, fill, glyph}) => {
   const radius = PIN_SIZE / 2
   const width = PIN_SIZE
   const height = Math.ceil(radius + radius * Math.SQRT2)
@@ -43,6 +72,7 @@ const drawPin = ({border, fill}) => {
   teardrop(ctx, radius, radius, radius)
   ctx.fillStyle = fill
   teardrop(ctx, radius, radius, radius - PIN_BORDER)
+  drawSwing(ctx, radius, radius, glyph)
   return ctx.getImageData(0, 0, canvas.width, canvas.height)
 }
 
