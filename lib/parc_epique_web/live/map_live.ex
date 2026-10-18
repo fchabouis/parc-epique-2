@@ -64,7 +64,10 @@ defmodule ParcEpiqueWeb.MapLive do
   end
 
   def handle_params(_params, _uri, socket) do
-    {:noreply, assign(socket, playground: nil, photo: nil, page_title: gettext("Playground map"))}
+    {:noreply,
+     socket
+     |> assign(playground: nil, photo: nil, page_title: gettext("Playground map"))
+     |> push_event("unfocus", %{})}
   end
 
   @impl true

@@ -94,6 +94,7 @@ defmodule ParcEpiqueWeb.PlaygroundSheetTest do
 
     view |> element("#playground-sheet a[aria-label=Fermer]") |> render_click()
     assert_patch(view, ~p"/fr")
+    assert_push_event(view, "unfocus", %{})
     refute has_element?(view, "#playground-sheet")
   end
 
