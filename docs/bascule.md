@@ -24,7 +24,7 @@
 ## Anciennes URLs et anciens visiteurs
 
 - `/#/`, `/#/apropos` et `/#/login` sont redirigés vers leur équivalent par un petit script de la page (un `#` n'atteint jamais le serveur). `/apropos`, `/login` et `/index.html` (page de démarrage de l'ancienne application installée) sont redirigés côté serveur.
-- L'ancien site enregistrait un service worker sous `/service-worker.js`, qui continue à servir l'ancienne application depuis son cache. La nouvelle application sert un fichier à cette URL qui vide les caches, se désinscrit et recharge la page : dès que le navigateur revérifie le fichier (à la prochaine visite), l'ancien site disparaît. L'hypothèse de ce nom de fichier (valeur par défaut du plugin utilisé par l'ancien site) est à vérifier sur l'ancien site avant la bascule (`https://parc-epique.fr/service-worker.js`).
+- L'ancien site enregistrait un service worker sous `/service-worker.js`, qui continue à servir l'ancienne application depuis son cache. La nouvelle application sert un fichier à cette URL qui vide les caches, se désinscrit et recharge la page : dès que le navigateur revérifie le fichier (à la prochaine visite), l'ancien site disparaît. Ce nom de fichier est confirmé (`https://parc-epique.fr/service-worker.js` est bien un worker sw-precache de portée `/`). Au premier passage après la bascule, un visiteur de l'ancien site voit encore l'ancienne application, puis la page se recharge toute seule sur la nouvelle.
 - Les URLs de photos de l'ancien Storage ne sont plus utilisées : les photos sont servies depuis `/uploads/`.
 
 ## Retour en arrière
@@ -42,7 +42,7 @@ Tant que Firebase Hosting est en place, remettre l'ancien enregistrement DNS suf
 
 | Fonction | Où |
 |---|---|
-| Carte des aires, regroupements, ma position | `/fr` |
+| Carte des aires (un pin par aire, sans regroupement), ma position | `/fr` |
 | Fiche d'une aire (nom, notes, avis, détails, photos) et page propre à chaque aire | `/fr/aires/:id` |
 | Donner un avis (sans compte ou connecté) | fiche |
 | Proposer des détails (équipements, gratuit, ouvert la nuit, privé) | fiche |
