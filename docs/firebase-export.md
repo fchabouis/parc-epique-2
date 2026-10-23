@@ -27,7 +27,7 @@ gcloud auth login
 
 Le script cherche le bucket Storage (`aires-de-jeux-e8525.appspot.com` ou `aires-de-jeux-e8525.firebasestorage.app`). S'il ne le trouve pas, liste les buckets avec `gsutil ls -p aires-de-jeux-e8525` et relance avec `FIREBASE_BUCKET=<nom> ./scripts/firebase_export.sh`.
 
-Si `firebase database:get` échoue parce que la base est trop grosse, exporte-la depuis la console (Realtime Database → ⋮ → Exporter le JSON), enregistre-la sous `export/database.json` et lance les autres étapes à la main.
+Si `firebase database:get` échoue parce que la base est trop grosse, exporte-la depuis la console (Realtime Database → ⋮ → Exporter le JSON), enregistre-la sous `export/database.json` (la console la nomme `aires-de-jeux-e8525-export.json` : renomme-la, ou passe son chemin tel quel à `mix parc_epique.import_firebase`) et lance les autres étapes à la main.
 
 ## Vérifier
 

@@ -77,6 +77,8 @@ cp backup.env.example backup.env && nano backup.env   # dépôt restic hors serv
 crontab -e   # 0 4 * * * /srv/parc-epique/backup.sh >> /var/log/parc-epique-backup.log 2>&1
 ```
 
+Avec Backblaze B2 (le moins cher pour une dizaine de Go) : un bucket privé, une clé d'application limitée à ce bucket, puis `RESTIC_REPOSITORY=b2:nom-du-bucket:/`, `B2_ACCOUNT_ID` et `B2_ACCOUNT_KEY` dans `backup.env`.
+
 **Garder le mot de passe restic ailleurs que sur le serveur** (gestionnaire de mots de passe) : sans lui, les sauvegardes sont illisibles. `HEALTHCHECK_PING_URL` (par exemple un moniteur gratuit sur healthchecks.io) prévient quand la sauvegarde ne s'est pas exécutée.
 
 ### Vérifier qu'une restauration fonctionne
